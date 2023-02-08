@@ -282,7 +282,7 @@ TEST_F(CudnnFusedConvRewriterTest, TestRelu6) {
                     "the Nvidia Ampere+ GPUs.";
   }
   // sum = conv(x, w) + bias
-  // select(compare(sum, 0, GT), sum, exponential-minus-one(sum));
+  // clamp(0, sum, 6);
   TestMatchWithAllTypes(R"(
     HloModule Test
     ENTRY Test {
@@ -307,7 +307,7 @@ TEST_F(CudnnFusedConvRewriterTest, TestLeakyRelu) {
                     "the Nvidia Ampere+ GPUs.";
   }
   // sum = conv(x, w) + bias
-  // select(compare(sum, 0, GT), sum, exponential-minus-one(sum));
+  // select(compare(sum, 0, GT), sum, multiply(sum, alpha));
   TestMatchWithAllTypes(R"(
     HloModule Test
     ENTRY Test {
