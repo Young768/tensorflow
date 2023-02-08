@@ -1111,7 +1111,6 @@ TEST_F(CudnnFusedConvRewriterHloTest, FuseRelu6) {
     })";
   TF_ASSERT_OK_AND_ASSIGN(auto m, ParseAndReturnVerifiedModule(module_str));
 
-  VLOG(0)<<"Testing cudnn conv + bias + relu6..fusion";
   GpuConvRewriter rewriter;
   TF_ASSERT_OK(RunHloPass(&rewriter, m.get()).status());
   CudnnFusedConvRewriter fuser{GetCudaComputeCapability()};
@@ -1150,7 +1149,7 @@ TEST_F(CudnnFusedConvRewriterHloTest, DontFuseRelu6IfMultipleUses) {
       ROOT root = tuple(relu, not_relu)
     })";
   TF_ASSERT_OK_AND_ASSIGN(auto m, ParseAndReturnVerifiedModule(module_str));
-  VLOG(0)<<"Testing not cudnn conv + bias + relu6..fusion";
+
   GpuConvRewriter rewriter;
   TF_ASSERT_OK(RunHloPass(&rewriter, m.get()).status());
   CudnnFusedConvRewriter fuser{GetCudaComputeCapability()};
@@ -1203,7 +1202,6 @@ TEST_F(CudnnFusedConvRewriterHloTest, FuseLeakyRelu) {
     })";
   TF_ASSERT_OK_AND_ASSIGN(auto m, ParseAndReturnVerifiedModule(module_str));
 
-  VLOG(0)<<"Testing cudnn conv + bias + leakyrelu..fusion";
   GpuConvRewriter rewriter;
   TF_ASSERT_OK(RunHloPass(&rewriter, m.get()).status());
   CudnnFusedConvRewriter fuser{GetCudaComputeCapability()};
@@ -1249,7 +1247,6 @@ TEST_F(CudnnFusedConvRewriterHloTest, DontFuseLeakyReluIfMultipleUses) {
     })";
   TF_ASSERT_OK_AND_ASSIGN(auto m, ParseAndReturnVerifiedModule(module_str));
 
-  VLOG(0)<<"Testing not cudnn conv + bias + leakyrelu..fusion";
   GpuConvRewriter rewriter;
   TF_ASSERT_OK(RunHloPass(&rewriter, m.get()).status());
   CudnnFusedConvRewriter fuser{GetCudaComputeCapability()};
