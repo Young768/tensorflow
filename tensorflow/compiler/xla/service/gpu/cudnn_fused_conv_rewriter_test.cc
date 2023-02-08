@@ -1254,7 +1254,6 @@ TEST_F(CudnnFusedConvRewriterHloTest, DontFuseLeakyReluIfMultipleUses) {
 
   SCOPED_TRACE(m->ToString());
   const HloInstruction* conv;
-  HloInstruction* alpha;
   auto gte_pattern =
       m::GetTupleElement(
           m::CustomCall(&conv, {kCudnnConvBiasActivationForwardCallTarget},
@@ -1269,7 +1268,8 @@ TEST_F(CudnnFusedConvRewriterHloTest, DontFuseLeakyReluIfMultipleUses) {
                              .WithComparisonDirection(ComparisonDirection::kGt)
                              .WithOneUse(),
                          gte_pattern,
-                         m::Multiply(gte_pattern, m::Broadcast(m::ConstantEffectiveScalar(&alpha)))),
+                         m::Multiply(gte_pattern, 
+                         m::Broadcast(m::ConstantEffectiveScalar()))),
           m::Minimum())));
   TF_ASSERT_OK_AND_ASSIGN(auto config,
                           conv->backend_config<CudnnConvBackendConfig>());
