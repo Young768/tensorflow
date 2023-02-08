@@ -642,7 +642,7 @@ StatusOr<bool> FuseRelu6(HloComputation* comp, se::CudaComputeCapability cc) {
         !cc.IsAtLeast(se::CudaComputeCapability::AMPERE)) {
       return false;
     }
-    HloInstruction* gte, conv;
+    HloInstruction *gte, *conv;
     // We don't want to upgrade depthwise convolutions to ConvBiasActivation,
     // because the fused CUDNN functions are slower for some of those.
     if (!Match(instr,
@@ -685,7 +685,7 @@ StatusOr<bool> FuseLeakyRelu(HloComputation* comp, se::CudaComputeCapability cc)
         !cc.IsAtLeast(se::CudaComputeCapability::AMPERE)) {
       return false;
     }
-    HloInstruction* gte, conv;
+    HloInstruction *gte, *conv;
     // We don't want to upgrade depthwise convolutions to ConvBiasActivation,
     // because the fused CUDNN functions are slower for some of those.
     auto gte_pattern =
