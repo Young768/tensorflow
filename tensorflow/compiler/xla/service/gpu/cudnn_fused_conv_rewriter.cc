@@ -167,9 +167,11 @@ StatusOr<HloInstruction*> EnsureIsConvBiasActivation(HloInstruction* conv, HloIn
     absl::InlinedVector<HloInstruction*, 3> new_operands(
         conv->operands().begin(), conv->operands().end());
     new_operands.push_back(bias);
-    if (alpha != nullptr) new_operands.push_back(alpha);
+    
 
-    HloInstruction* new_conv = comp->AddInstruction(
+    HloInstruction* new_conv;
+    if (alpha != nullptr) new_conv = comp->AddInstruction(alpha);
+    new_conv = comp->AddInstruction(
         conv->CloneWithNewOperands(conv->shape(), new_operands));
     TF_RETURN_IF_ERROR(comp->ReplaceInstruction(conv, new_conv));
     new_conv->set_custom_call_target(kCudnnConvBiasActivationForwardCallTarget);
