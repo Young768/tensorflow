@@ -169,9 +169,7 @@ StatusOr<HloInstruction*> EnsureIsConvBiasActivation(HloInstruction* conv, HloIn
     new_operands.push_back(bias);
     
 
-    HloInstruction* new_conv;
-    if (alpha != nullptr) new_conv = comp->AddInstruction(alpha);
-    new_conv = comp->AddInstruction(
+    HloInstruction* new_conv = comp->AddInstruction(
         conv->CloneWithNewOperands(conv->shape(), new_operands));
     TF_RETURN_IF_ERROR(comp->ReplaceInstruction(conv, new_conv));
     new_conv->set_custom_call_target(kCudnnConvBiasActivationForwardCallTarget);
@@ -719,6 +717,8 @@ StatusOr<bool> FuseLeakyRelu(HloComputation* comp, se::CudaComputeCapability cc)
         })) {
       continue;
     }
+    TF_ASSIGN_OR_RETURN(Literal alpha_f64, alpha->literal().Convert(F64));
+    config.set_conv_result_scale(alpha_f64.GetFirstElement<double>());
     TF_ASSIGN_OR_RETURN(conv, EnsureIsConvBiasActivation(conv, alpha));
     config.set_activation_mode(se::dnn::kLeakyRelu);
     TF_RETURN_IF_ERROR(conv->set_backend_config(config));
