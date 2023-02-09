@@ -38,6 +38,10 @@ message CudnnConvBackendConfig {
   // The scaling factor multiplied with the side input. If no side input buffer
   // is provided, this field must be 0.
   double side_input_scale = 5;
+
+  // The negative slope coefficient alpha for leaky_relu activation. 
+  // If not provided, this field is 0.0.
+  double leakyrelu_alpha = 6;
 }
 
 // Backend config for the GEMM operation running through cuBLAS.
