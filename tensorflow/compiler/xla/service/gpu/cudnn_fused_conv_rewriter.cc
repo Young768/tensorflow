@@ -685,7 +685,7 @@ StatusOr<bool> FuseLeakyRelu(HloComputation* comp, se::CudaComputeCapability cc)
         !cc.IsAtLeast(se::CudaComputeCapability::AMPERE)) {
       return false;
     }
-    HloInstruction *gte, *conv;
+    HloInstruction *gte, *conv, *alpha;
     // We don't want to upgrade depthwise convolutions to ConvBiasActivation,
     // because the fused CUDNN functions are slower for some of those.
     auto gte_pattern =
@@ -702,7 +702,7 @@ StatusOr<bool> FuseLeakyRelu(HloComputation* comp, se::CudaComputeCapability cc)
                              .WithOneUse(),
                          gte_pattern,
                          m::Multiply(gte_pattern, 
-                         m::Broadcast(m::ConstantEffectiveScalar()))))) {
+                         m::Broadcast(m::ConstantEffectiveScalar(&alpha)))))) {
       continue;
     }
     TF_ASSIGN_OR_RETURN(CudnnConvBackendConfig config,
