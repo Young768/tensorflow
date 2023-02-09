@@ -140,7 +140,7 @@ bool IsLosslesslyConvertibleToF16(const HloInstruction* instr) {
 // conv-bias-activation.  If it's already a conv-bias-activation, does nothing.
 //
 // If `conv` is anything else, returns an error.
-StatusOr<HloInstruction*> EnsureIsConvBiasActivation(HloInstruction* conv) {
+StatusOr<HloInstruction*> EnsureIsConvBiasActivation(HloInstruction* conv, HloInstruction *alpha = nullptr) {
   CHECK_EQ(conv->opcode(), HloOpcode::kCustomCall);
 
   if (conv->custom_call_target() == kCudnnConvBiasActivationForwardCallTarget) {
@@ -167,6 +167,7 @@ StatusOr<HloInstruction*> EnsureIsConvBiasActivation(HloInstruction* conv) {
     absl::InlinedVector<HloInstruction*, 3> new_operands(
         conv->operands().begin(), conv->operands().end());
     new_operands.push_back(bias);
+    if (alpha != nullptr) new_operands.push_back(alpha);
 
     HloInstruction* new_conv = comp->AddInstruction(
         conv->CloneWithNewOperands(conv->shape(), new_operands));
@@ -284,7 +285,7 @@ StatusOr<bool> FuseConvAlpha(HloComputation* comp) {
 
     // StreamExecutor doesn't support the alpha parameter on non-bias-activation
     // convs, so we have to upgrade `conv`.
-    TF_ASSIGN_OR_RETURN(conv, EnsureIsConvBiasActivation(conv));
+    TF_ASSIGN_OR_RETURN(conv, EnsureIsConvBiasActivation(conv, nullptr));
 
     TF_ASSIGN_OR_RETURN(Literal alpha_f64, alpha->literal().Convert(F64));
     config.set_conv_result_scale(alpha_f64.GetFirstElement<double>());
@@ -324,7 +325,7 @@ StatusOr<bool> FuseBiasOrSideInput(HloComputation* comp) {
     // !can_accept_bias && !can_accept_side_input, and our shiny new
     // bias-activation conv will be able to accept both.
     if (conv->custom_call_target() == kCudnnConvForwardCallTarget) {
-      TF_ASSIGN_OR_RETURN(conv, EnsureIsConvBiasActivation(conv));
+      TF_ASSIGN_OR_RETURN(conv, EnsureIsConvBiasActivation(conv, nullptr));
     }
 
     // Can't fuse bias or side-input if the conv already has a relu (or other
@@ -587,7 +588,7 @@ StatusOr<bool> FuseElu(HloComputation* comp, se::CudaComputeCapability cc) {
         })) {
       continue;
     }
-    TF_ASSIGN_OR_RETURN(conv, EnsureIsConvBiasActivation(conv));
+    TF_ASSIGN_OR_RETURN(conv, EnsureIsConvBiasActivation(conv, nullptr));
     config.set_activation_mode(se::dnn::kElu);
     TF_RETURN_IF_ERROR(conv->set_backend_config(config));
     TF_RETURN_IF_ERROR(comp->ReplaceInstruction(instr, gte));
@@ -624,7 +625,7 @@ StatusOr<bool> FuseRelu(HloComputation* comp) {
         })) {
       continue;
     }
-    TF_ASSIGN_OR_RETURN(conv, EnsureIsConvBiasActivation(conv));
+    TF_ASSIGN_OR_RETURN(conv, EnsureIsConvBiasActivation(conv, nullptr));
     config.set_activation_mode(se::dnn::kRelu);
     TF_RETURN_IF_ERROR(conv->set_backend_config(config));
     TF_RETURN_IF_ERROR(comp->ReplaceInstruction(instr, gte));
@@ -667,7 +668,7 @@ StatusOr<bool> FuseRelu6(HloComputation* comp, se::CudaComputeCapability cc) {
         })) {
       continue;
     }
-    TF_ASSIGN_OR_RETURN(conv, EnsureIsConvBiasActivation(conv));
+    TF_ASSIGN_OR_RETURN(conv, EnsureIsConvBiasActivation(conv, nullptr));
     config.set_activation_mode(se::dnn::kRelu6);
     TF_RETURN_IF_ERROR(conv->set_backend_config(config));
     TF_RETURN_IF_ERROR(comp->ReplaceInstruction(instr, gte));
@@ -716,7 +717,7 @@ StatusOr<bool> FuseLeakyRelu(HloComputation* comp, se::CudaComputeCapability cc)
         })) {
       continue;
     }
-    TF_ASSIGN_OR_RETURN(conv, EnsureIsConvBiasActivation(conv));
+    TF_ASSIGN_OR_RETURN(conv, EnsureIsConvBiasActivation(conv, alpha));
     config.set_activation_mode(se::dnn::kLeakyRelu);
     TF_RETURN_IF_ERROR(conv->set_backend_config(config));
     TF_RETURN_IF_ERROR(comp->ReplaceInstruction(instr, gte));
