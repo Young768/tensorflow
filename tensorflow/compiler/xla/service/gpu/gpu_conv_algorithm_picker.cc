@@ -130,6 +130,8 @@ StatusOr<std::vector<MaybeFusedConvRunner>> GetAlgorithms(
 
   std::vector<MaybeFusedConvRunner> result;
 
+  VLOG(0)<<"Debug...........leaky_relu_alpha value is: "<<config.fusion->side_input_scale;
+
   switch (kind) {
     default:
       return InternalError("Unknown ConvolutionKind %d", kind);
