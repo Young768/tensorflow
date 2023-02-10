@@ -41,7 +41,7 @@ message CudnnConvBackendConfig {
 
   // The negative slope coefficient alpha for leaky_relu activation. 
   // If not provided, this field is 0.0.
-  double leakyrelu_alpha = 6;
+  double leakyrelu_alpha = 7;
 }
 
 // Backend config for the GEMM operation running through cuBLAS.
