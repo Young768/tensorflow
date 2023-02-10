@@ -68,7 +68,7 @@ Status ConvolutionThunk::ExecuteOnStream(const ExecuteParams& params) {
 
   RunConvOptions opts;
   opts.runner_cache = &GetOrCreateRunner(params.stream);
-
+  VLOG(0)<<"#################################### RUNNING from ConvolutionThunk";
   TF_RETURN_IF_ERROR(RunGpuConv(config_, absl::MakeSpan(operand_se_buffers),
                                 result_buffer, scratch, params.stream, opts));
 

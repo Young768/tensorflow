@@ -362,7 +362,7 @@ static absl::Status ConvImpl(
 
   RunConvOptions opts;
   opts.runner_cache = &(*conv)->runner;
-
+  VLOG(0)<<"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ RUNNING from ConvImpl";
   // Run the convolution.
   auto st = RunGpuConv((*conv)->config, buffers, result_buffer, scratch_buffer,
                        run_options->stream(), opts);
