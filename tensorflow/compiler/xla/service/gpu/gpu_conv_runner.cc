@@ -96,7 +96,7 @@ Status RunGpuConvForwardActivation(const GpuConvParams& params,
                                    DeviceMemoryBase scratch_memory) {
   se::DeviceMemory<OutputType> side_input(params.fusion->side_input_buf);
   // If there is no side input, use output as the side input.
-  VLOG(0)<<"Debug from runGpuConvForwardActivation for side_input_scale: "<<params.config->fusion->side_input_scale;
+  VLOG(0)<<"Debug from runGpuConvForwardActivation for side_input_scale: "<<params.config->fusion->leakyrelu_alpha;
   if (side_input.is_null()) {
     if (params.config->fusion->side_input_scale != 0) {
       return InternalError(

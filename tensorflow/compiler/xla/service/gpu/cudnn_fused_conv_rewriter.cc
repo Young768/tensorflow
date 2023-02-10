@@ -721,7 +721,6 @@ StatusOr<bool> FuseLeakyRelu(HloComputation* comp, se::CudaComputeCapability cc)
     TF_ASSIGN_OR_RETURN(conv, EnsureIsConvBiasActivation(conv, alpha));
     config.set_activation_mode(se::dnn::kLeakyRelu);
     config.set_leakyrelu_alpha(alpha_f64.GetFirstElement<double>());
-    config.set_side_input_scale(9);
     TF_RETURN_IF_ERROR(conv->set_backend_config(config));
     TF_RETURN_IF_ERROR(comp->ReplaceInstruction(instr, gte));
     changed = true;
