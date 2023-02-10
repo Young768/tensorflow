@@ -304,6 +304,7 @@ StatusOr<GpuConvConfig> GetGpuConvConfig(
     }
     fusion.mode =
         static_cast<se::dnn::ActivationMode>(backend_config.activation_mode());
+    VLOG(0)<<"Debug backend config side_input_scale: "<<backend_config.side_input_scale() <<" leaky_relu_alpha: "<<backend_config.leakyrelu_alpha();
     fusion.side_input_scale = backend_config.side_input_scale();
     fusion.leakyrelu_alpha = backend_config.leakyrelu_alpha();
   }
