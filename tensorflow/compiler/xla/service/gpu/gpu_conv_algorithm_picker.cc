@@ -130,7 +130,7 @@ StatusOr<std::vector<MaybeFusedConvRunner>> GetAlgorithms(
 
   std::vector<MaybeFusedConvRunner> result;
 
-  VLOG(0)<<"Debug...........leaky_relu_alpha value is: "<<config.fusion->side_input_scale;
+  VLOG(0)<<"Debug...........leaky_relu_alpha value is: "<<config.fusion->leakyrelu_alpha;
 
   switch (kind) {
     default:
