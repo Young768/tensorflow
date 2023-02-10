@@ -127,7 +127,7 @@ Status RunGpuConvForwardActivation(const GpuConvParams& params,
       se::dnn::DataType output_type,
       GetDNNDataTypeFromPrimitiveType(params.config->output_type));
 
-  VLOG(0)<<"Debug from runGpuConvForwardActivation: "<<params.config->fusion->leakyrelu_alpha;
+  VLOG(0)<<"Debug from runGpuConvForwardActivation for side_input_scale: "<<params.config->fusion->side_input_scale;
 
   se::dnn::FusedConvOp::Config config{se::dnn::ConvolutionKind::FORWARD,
                                       input_type,
