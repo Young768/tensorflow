@@ -718,6 +718,7 @@ StatusOr<bool> FuseLeakyRelu(HloComputation* comp, se::CudaComputeCapability cc)
       continue;
     }
     TF_ASSIGN_OR_RETURN(Literal alpha_f64, alpha->literal().Convert(F64));
+    VLOG(0)<<"Debug value from rewritter: "<< alpha_f64.GetFirstElement<double>();
     config.set_leakyrelu_alpha(alpha_f64.GetFirstElement<double>());
     TF_ASSIGN_OR_RETURN(conv, EnsureIsConvBiasActivation(conv, alpha));
     config.set_activation_mode(se::dnn::kLeakyRelu);
