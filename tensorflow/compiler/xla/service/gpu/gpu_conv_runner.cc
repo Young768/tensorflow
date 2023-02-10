@@ -96,6 +96,7 @@ Status RunGpuConvForwardActivation(const GpuConvParams& params,
                                    DeviceMemoryBase scratch_memory) {
   se::DeviceMemory<OutputType> side_input(params.fusion->side_input_buf);
   // If there is no side input, use output as the side input.
+  VLOG(0)<<"Debug from runGpuConvForwardActivation for side_input_scale: "<<params.config->fusion->side_input_scale;
   if (side_input.is_null()) {
     if (params.config->fusion->side_input_scale != 0) {
       return InternalError(
@@ -126,8 +127,6 @@ Status RunGpuConvForwardActivation(const GpuConvParams& params,
   TF_ASSIGN_OR_RETURN(
       se::dnn::DataType output_type,
       GetDNNDataTypeFromPrimitiveType(params.config->output_type));
-
-  VLOG(0)<<"Debug from runGpuConvForwardActivation for side_input_scale: "<<params.config->fusion->side_input_scale;
 
   se::dnn::FusedConvOp::Config config{se::dnn::ConvolutionKind::FORWARD,
                                       input_type,
