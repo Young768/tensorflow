@@ -345,7 +345,7 @@ static absl::Status ConvImpl(
             side_input_attrs);
 
         StatusOr<GpuConvConfig> conv_config = GetGpuConvConfig(descriptor, "");
-        VLOG(0)<<"debug from ConvImpl for config_leakyrelu_alpha: "<<conv_config->fusion.leakyrelu_alpha;
+        VLOG(0)<<"debug from ConvImpl for config_leakyrelu_alpha: "<<conv_config->fusion->leakyrelu_alpha;
         if (!conv_config.ok()) return ToAbslStatus(conv_config.status());
 
         return ConvRunner(*std::move(conv_config));
