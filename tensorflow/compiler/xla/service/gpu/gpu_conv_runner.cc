@@ -142,7 +142,7 @@ Status RunGpuConvForwardActivation(const GpuConvParams& params,
                                       params.config->output_descriptor,
                                       params.config->conv_desc,
                                       params.config->fusion->mode};
-  VLOG(0)<<"Debug from runGpuConvForwardActivation for side_input_scale: "<<config.leakyrelu_alpha;
+  VLOG(0)<<"Debug from runGpuConvForwardActivation for leakyrelu_alpha: "<<config.leakyrelu_alpha;
   TF_ASSIGN_OR_RETURN(auto* runner,
                       lazy_runner->GetOrCreateRunner(config, stream));
 
