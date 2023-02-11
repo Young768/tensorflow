@@ -150,7 +150,7 @@ struct ConvOp {
   static tsl::StatusOr<std::unique_ptr<const OpRunner<ConvSignature>>>
   RunnerFromAlgorithmDesc(const AlgorithmDesc& desc, Config config,
                           Stream* stream) {
-    VLOG(0)<<"Debug from ConvolveRunnerFromDesc for leakyrelu_alpha: "<<config.leakyrelu_alpha;
+    VLOG(0)<<"Debug from ConvolveRunnerFromDesc for leakyrelu_alpha: ";
     return stream->ConvolveRunnerFromDesc(
         desc, config.kind, config.input_type, config.output_type,
         config.input_descriptor, config.filter_descriptor,
