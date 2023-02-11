@@ -1066,7 +1066,7 @@ Status IrEmitterUnnested::EmitConvolutionThunk(mlir::Operation* op) {
   }
   
   TF_ASSIGN_OR_RETURN(GpuConvConfig config, GetGpuConvConfig(descriptor, ""));
-  VLOG(0)<<"Debug from EmitConvolutionThunk"<<config->fusion->leakyrelu_alpha;
+  VLOG(0)<<"Debug from EmitConvolutionThunk"<<config.fusion.leakyrelu_alpha;
   AddThunkToThunkSequence(std::make_unique<ConvolutionThunk>(
       GetThunkInfo(op), std::move(config), std::move(operand_slices),
       conv_result_slice, scratch_slice));
