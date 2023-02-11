@@ -96,7 +96,7 @@ Status RunGpuConvForwardActivation(const GpuConvParams& params,
                                    DeviceMemoryBase scratch_memory) {
   se::DeviceMemory<OutputType> side_input(params.fusion->side_input_buf);
   // If there is no side input, use output as the side input.
-  VLOG(0)<<"Debug from runGpuConvForwardActivation for leakyrelu_alpha: "<<params.config->fusion->leakyrelu_alpha;
+  
   if (side_input.is_null()) {
     if (params.config->fusion->side_input_scale != 0) {
       return InternalError(
@@ -127,7 +127,8 @@ Status RunGpuConvForwardActivation(const GpuConvParams& params,
   TF_ASSIGN_OR_RETURN(
       se::dnn::DataType output_type,
       GetDNNDataTypeFromPrimitiveType(params.config->output_type));
-
+  
+  
   se::dnn::FusedConvOp::Config config{se::dnn::ConvolutionKind::FORWARD,
                                       input_type,
                                       BiasTypeForInputType(input_type),
@@ -141,6 +142,7 @@ Status RunGpuConvForwardActivation(const GpuConvParams& params,
                                       params.config->output_descriptor,
                                       params.config->conv_desc,
                                       params.config->fusion->mode};
+  VLOG(0)<<"Debug from runGpuConvForwardActivation for side_input_scale: "<<config.leakyrelu_alpha;
   TF_ASSIGN_OR_RETURN(auto* runner,
                       lazy_runner->GetOrCreateRunner(config, stream));
 
