@@ -1064,8 +1064,9 @@ Status IrEmitterUnnested::EmitConvolutionThunk(mlir::Operation* op) {
   } else {
     return InternalError("Unexpected operation");
   }
-  VLOG(0)<<"Debug from EmitConvolutionThunk"<<conv_config->fusion->leakyrelu_alpha;
+  
   TF_ASSIGN_OR_RETURN(GpuConvConfig config, GetGpuConvConfig(descriptor, ""));
+  VLOG(0)<<"Debug from EmitConvolutionThunk"<<config->fusion->leakyrelu_alpha;
   AddThunkToThunkSequence(std::make_unique<ConvolutionThunk>(
       GetThunkInfo(op), std::move(config), std::move(operand_slices),
       conv_result_slice, scratch_slice));
