@@ -86,7 +86,7 @@ class LazyOpRunner {
     absl::call_once(once_flag_, [&] {
       if (runner_) return;  // runner was passed via constructor argument
 
-      VLOG(0)<<"Debug from GetOrCreateRunner: "<<config.leakyrelu_alpha;
+      
       auto r = Op::RunnerFromAlgorithmDesc(desc_, std::move(config), stream);
       if (!r.ok()) {
         error_ = std::move(r).status();
