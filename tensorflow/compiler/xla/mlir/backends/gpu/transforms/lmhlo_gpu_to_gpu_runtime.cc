@@ -378,7 +378,7 @@ class ConvOpLowering : public OpRewritePattern<Conv> {
                     fused.getActivationModeAttr());
       set_attr("side_input_scale", fused.getSideInputScaleAttr());
     }
-
+    VLOG(0)<<"Debug from lmhlo_gpu_to_gpu_runtime.";
     // Erase the original conv operation.
     rewriter.eraseOp(op);
 
