@@ -1045,16 +1045,20 @@ Status IrEmitterUnnested::EmitConvolutionThunk(mlir::Operation* op) {
   if (auto conv = dyn_cast<ConvForwardOp>(op)) {
     descriptor.kind = CudnnConvKind::kForward;
     fill_conv_descriptor(conv);
+    VLOG(0)<<"branch 0";
   } else if (auto conv = dyn_cast<ConvBackwardInputOp>(op)) {
     descriptor.kind = CudnnConvKind::kBackwardInput;
     fill_conv_descriptor(conv);
+    VLOG(0)<<"branch 1";
   } else if (auto conv = dyn_cast<ConvBackwardFilterOp>(op)) {
     descriptor.kind = CudnnConvKind::kBackwardFilter;
     fill_conv_descriptor(conv);
+    VLOG(0)<<"branch 2";
   } else if (auto conv = dyn_cast<ConvForwardFusedOp>(op)) {
     descriptor.kind = CudnnConvKind::kForwardActivation;
     fill_conv_descriptor(conv);
     TF_RETURN_IF_ERROR(set_activation_mode(conv));
+    VLOG(0)<<"branch 3";
   } else if (auto conv = dyn_cast<ConvForwardFusedSideInputOp>(op)) {
     descriptor.kind = CudnnConvKind::kForwardActivation;
     fill_conv_descriptor(conv);
