@@ -1062,6 +1062,7 @@ Status IrEmitterUnnested::EmitConvolutionThunk(mlir::Operation* op) {
     descriptor.backend_config.set_side_input_scale(
         conv.getSideInputScale().convertToDouble());
     descriptor.backend_config.set_leakyrelu_alpha(0.2);
+    VLOG(0)<<"Debug if the overwrite has been done: "<<descriptor.backend_config.leakyrelu_alpha();
   } else {
     return InternalError("Unexpected operation");
   }
