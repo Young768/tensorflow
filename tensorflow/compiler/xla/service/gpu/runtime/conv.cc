@@ -333,7 +333,7 @@ static absl::Status ConvImpl(
 
   std::optional<SideInputAttrs> side_input_attrs = std::nullopt;
   if (side_input_scale.has_value()) side_input_attrs = {*side_input_scale};
-
+  VLOG(0)<<"debug from ConvImpl ............................";
   // Get or create the convolution runner state.
   absl::StatusOr<ConvRunner*> conv =
       runner.GetOrCreate([&]() -> absl::StatusOr<ConvRunner> {
@@ -363,7 +363,7 @@ static absl::Status ConvImpl(
 
   RunConvOptions opts;
   opts.runner_cache = &(*conv)->runner;
-  
+
   // Run the convolution.
   auto st = RunGpuConv((*conv)->config, buffers, result_buffer, scratch_buffer,
                        run_options->stream(), opts);
