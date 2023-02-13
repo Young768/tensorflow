@@ -1061,12 +1061,13 @@ Status IrEmitterUnnested::EmitConvolutionThunk(mlir::Operation* op) {
     TF_RETURN_IF_ERROR(set_activation_mode(conv));
     descriptor.backend_config.set_side_input_scale(
         conv.getSideInputScale().convertToDouble());
+    descriptor.backend_config.set_leakyrelu_alpha(0.2);
   } else {
     return InternalError("Unexpected operation");
   }
   
   TF_ASSIGN_OR_RETURN(GpuConvConfig config, GetGpuConvConfig(descriptor, ""));
-  VLOG(0)<<"Debug from EmitConvolutionThunk"<<config.fusion->leakyrelu_alpha;
+  VLOG(0)<<"Debug from EmitConvolutionThunk "<<config.fusion->leakyrelu_alpha;
   AddThunkToThunkSequence(std::make_unique<ConvolutionThunk>(
       GetThunkInfo(op), std::move(config), std::move(operand_slices),
       conv_result_slice, scratch_slice));
