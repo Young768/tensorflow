@@ -315,6 +315,8 @@ class ConvOpLowering : public OpRewritePattern<Conv> {
   LogicalResult matchAndRewrite(Conv op,
                                 PatternRewriter& rewriter) const override {
     // Get or create a custom call function declaration.
+    
+    VLOG(0)<<"Debug from lmhlo_gpu_to_gpu_runtime and emitting the mhlo....";
     ImplicitLocOpBuilder b(op.getLoc(), rewriter);
     func::FuncOp callee =
         custom_calls_.GetOrCreate(b, CustomCallTarget(op), op);
@@ -378,7 +380,6 @@ class ConvOpLowering : public OpRewritePattern<Conv> {
                     fused.getActivationModeAttr());
       set_attr("side_input_scale", fused.getSideInputScaleAttr());
     }
-    VLOG(0)<<"Debug from lmhlo_gpu_to_gpu_runtime.";
     // Erase the original conv operation.
     rewriter.eraseOp(op);
 
