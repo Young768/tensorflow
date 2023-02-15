@@ -1062,7 +1062,7 @@ static StatusOr<OwnedGpuRuntimeProgram> LowerToJitRt(
       mlir_module.lookupSymbol<mlir::func::FuncOp>(entry_function_name);
   func->setAttr("replica_count", replica_count_attr);
   func->setAttr("num_partitions", num_partitions_attr);
-
+  VLOG(0)<<"Lower LMHLO operations to the JitRt compatible custom calls.";
   // Lower LMHLO operations to the JitRt compatible custom calls.
   TF_RETURN_IF_ERROR(LowerToXlaGpuRuntime(
       mlir_module, {entry_function_name.data(), entry_function_name.size()},
