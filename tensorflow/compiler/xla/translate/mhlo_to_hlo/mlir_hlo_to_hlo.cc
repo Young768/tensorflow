@@ -973,6 +973,8 @@ LogicalResult ExportXlaOp(AsyncStartOp op, OpLoweringContext ctx) {
 
   auto& value_map = *ctx.values;
 
+  VLOG(0)<<"Debug log from LowerRegionAsComputation_7";
+
   Value result = op.getResult();
   llvm::SmallVector<xla::XlaOp> operands;
   if (failed(GetTuple(op, op.getInputs(), ctx, operands))) return failure();
@@ -2009,6 +2011,7 @@ LogicalResult ExportXlaOp(RngOp op, OpLoweringContext ctx) {
 LogicalResult ExportXlaOp(ScatterOp op, OpLoweringContext ctx) {
   auto& value_map = *ctx.values;
   xla::XlaComputation update_computation;
+  VLOG(0)<<"Debug log from LowerRegionAsComputation_6";
   if (failed(ctx.converter->LowerRegionAsComputation(&op.getUpdateComputation(),
                                                      &update_computation))) {
     return failure();
@@ -2045,6 +2048,7 @@ LogicalResult ExportXlaOp(SelectAndScatterOp op, OpLoweringContext ctx) {
   auto& value_map = *ctx.values;
   xla::XlaComputation select;
   xla::XlaComputation scatter;
+  VLOG(0)<<"Debug log from LowerRegionAsComputation_5";
   if (failed(
           ctx.converter->LowerRegionAsComputation(&op.getSelect(), &select)) ||
       failed(ctx.converter->LowerRegionAsComputation(&op.getScatter(),
@@ -2107,6 +2111,7 @@ LogicalResult ExportXlaOp(SliceOp op, OpLoweringContext ctx) {
 
 LogicalResult ExportXlaOp(SortOp op, OpLoweringContext ctx) {
   xla::XlaComputation comparator;
+  VLOG(0)<<"Debug log from LowerRegionAsComputation_4";
   if (failed(ctx.converter->LowerRegionAsComputation(&op.getComparator(),
                                                      &comparator)))
     return failure();
@@ -2163,6 +2168,7 @@ LogicalResult ExportXlaOp(UnaryEinsumOp op, OpLoweringContext ctx) {
 LogicalResult ExportXlaOp(WhileOp op, OpLoweringContext ctx) {
   xla::XlaComputation condition;
   xla::XlaComputation body;
+  VLOG(0)<<"Debug log from LowerRegionAsComputation_3";
   if (failed(ctx.converter->LowerRegionAsComputation(
           &op.getBody(), &body, llvm::None, /*ensure_single_arg*/ true)) ||
       failed(ctx.converter->LowerRegionAsComputation(
@@ -2228,7 +2234,7 @@ LogicalResult ExportXlaOp(FusionOp op, OpLoweringContext ctx) {
     op.emitOpError() << "requires fusion kind for HLO translation";
     return failure();
   }
-
+  VLOG(0)<<"Debug log from LowerRegionAsComputation_2";
   xla::XlaComputation fused_computation;
   if (failed(ctx.converter->LowerRegionAsComputation(&op.getFusedComputation(),
                                                      &fused_computation)))
@@ -3088,6 +3094,7 @@ xla::Status ConvertRegionToComputation(mlir::Region* region,
                                        MlirToHloConversionOptions options) {
   mlir::ModuleOp module;
   xla::XlaBuilder module_builder("main");
+  VLOG(0)<<"Debug log from LowerRegionAsComputation_1";
   ConvertToHloModule converter(module, module_builder, true, true, options);
   if (failed(converter.LowerRegionAsComputation(region, func)))
     return tsl::errors::Internal("failed to convert region to computation");
