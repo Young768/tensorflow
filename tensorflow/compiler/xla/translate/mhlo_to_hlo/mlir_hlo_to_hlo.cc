@@ -2924,7 +2924,7 @@ LogicalResult ConvertToHloModule::LowerBasicBlockAsFunction(
     std::optional<llvm::ArrayRef<mlir::Value>> implicit_operands) {
   // Mapping from the Value to lowered XlaOp.
   ValueLoweringMap lowering;
-
+  VLOG(0)<<"Debug log from LowerBasicBlockAsFunction";
   // If using tuples as input, then there is only one input parameter that is a
   // tuple.
   if (is_entry_function && use_tuple_args_) {
