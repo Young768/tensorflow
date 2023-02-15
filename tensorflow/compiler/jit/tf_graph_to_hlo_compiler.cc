@@ -23,6 +23,7 @@ Status TfGraphToHloCompiler::Compile(const XlaCompiler::CompileOptions& options,
                                      const NameAttrList& function,
                                      absl::Span<const XlaArgument> args,
                                      XlaCompilationResult* result) {
+  VLOG(0)<<"DEBUG FROM xla_compiler_.CompileFunction";
   return xla_compiler_.CompileFunction(options, function, args, result);
 }
 

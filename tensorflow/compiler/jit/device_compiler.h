@@ -307,7 +307,7 @@ DeviceCompiler<ExecutableType, ClientType>::CompileStrict(
   TF_RETURN_IF_ERROR(cache_value.compilation_status);
   TF_RET_CHECK(cache_value.executable == nullptr);
   TF_RET_CHECK(out_compilation_result->computation != nullptr);
-
+  VLOG(0)<<"###################################################################";
   auto loaded_executable = persistor_->TryToLoadExecutable(
       DeviceCompilationClusterSignature::Hash()(sig), sig.HumanString(),
       options, *out_compilation_result, compiler_client_.get());
