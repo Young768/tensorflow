@@ -166,6 +166,7 @@ StatusOr<Literal> Client::ExecuteAndTransfer(
     const XlaComputation& computation, absl::Span<GlobalData* const> arguments,
     const ExecutionOptions* execution_options,
     ExecutionProfile* execution_profile) {
+  VLOG(0)<<"DEBUG FROM Client::ExecuteAndTransfer";
   TF_ASSIGN_OR_RETURN(
       std::unique_ptr<GlobalData> data,
       Execute(computation, arguments, execution_options, execution_profile));

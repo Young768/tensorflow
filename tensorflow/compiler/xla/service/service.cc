@@ -604,7 +604,7 @@ StatusOr<std::vector<std::vector<const ShapedBuffer*>>> Service::GetArguments(
 Status Service::ExecuteGraphParallel(const ExecuteGraphParallelRequest* arg,
                                      ExecuteParallelResponse* result) {
   VLOG(1) << "running execute-graph-parallel request";
-
+  VLOG(0)<<"DEBUG FROM ExecuteGraphParallel";
   std::vector<std::vector<std::vector<const ShapedBuffer*>>> all_arguments;
   std::vector<std::vector<se::StreamExecutor*>> all_executors;
   std::vector<const HloModuleProto*> module_protos;
@@ -885,6 +885,7 @@ Status Service::Compile(const CompileRequest* arg, CompileResponse* result) {
   VLOG(3) << "Compile created HloModuleConfig computation layout: "
           << module_config->entry_computation_layout().ToString();
 
+  VLOG(0)<<"DEBUG log from Service::Compile";
   TF_ASSIGN_OR_RETURN(
       std::unique_ptr<Executable> executable,
       BuildExecutable(arg->computation(), std::move(module_config),
