@@ -1038,6 +1038,7 @@ static Status LowerToXlaGpuRuntime(mlir::ModuleOp module,
 
   GpuPipelineOpts opts;
   opts.enable_cuda_graphs = debug_options.xla_gpu_enable_cuda_graphs();
+  VLOG(0)<<"DEBUG LOGGING FROM LowerToXlaGpuRuntime";
   populateXlaGpuRuntimePasses(pm, thunk_sequence, opts);
 
   if (pm.run(module).failed()) {
@@ -1178,6 +1179,7 @@ static Status CompileModuleToLlvmIrImpl(
   results->llvm_module->setTargetTriple(target_triple);
   results->llvm_module->setDataLayout(data_layout);
 
+  VLOG(0)<<"DEBUG FROM CompileModuleToLlvmIrImpl";
   TF_RETURN_IF_ERROR(
       ScheduleGpuModule(hlo_module, pointer_size, gpu_device_info));
   {
@@ -1945,6 +1947,8 @@ StatusOr<std::unique_ptr<Executable>> CompileLmhloToExecutable(
       mlir::cast<mlir::func::FuncOp>(module.lookupSymbol(llvm::StringRef(
           entry_function_name.data(), entry_function_name.size())));
 
+
+  VLOG(0)<<"DEBUG logging from CompileLmhloToExecutable";
   std::vector<BufferAllocation> allocations;
   OutputInfoMap output_info;
   Shape output_shape;
