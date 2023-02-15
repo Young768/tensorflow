@@ -492,9 +492,10 @@ void ConvertLmhloGpuToGpuRuntimePass::runOnOperation() {
 
   // Patterns for every other Gpu operation.
   patterns.insert<CholeskyOpLowering>(ctx, custom_calls);
-
+  VLOG(0)<<"DEBUG ConvertLmhloGpuToGpuRuntimePass::runOnOperation() is done_0.";
   if (failed(applyPatternsAndFoldGreedily(module, std::move(patterns))))
     return signalPassFailure();
+  VLOG(0)<<"DEBUG ConvertLmhloGpuToGpuRuntimePass::runOnOperation() is done_1.";
 }
 
 std::unique_ptr<mlir::OperationPass<mlir::ModuleOp>>
