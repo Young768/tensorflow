@@ -813,6 +813,7 @@ StatusOr<std::unique_ptr<Executable>> Service::BuildExecutable(
     std::unique_ptr<HloModuleConfig> module_config, Backend* backend,
     se::StreamExecutor* executor, const Compiler::CompileOptions& options,
     bool run_backend_only) {
+  VLOG(0)<<"DEBUG FROM BuildExecutable";
   VLOG(1) << StrFormat(
       "BuildExecutable on service %p with serialized module proto: %s", this,
       module_proto.name());
@@ -836,7 +837,6 @@ StatusOr<std::unique_ptr<Executable>> Service::BuildExecutable(
     TF_ASSIGN_OR_RETURN(module, backend->compiler()->RunHloPasses(
                                     std::move(module), executor, options));
   }
-  VLOG(0)<<"DEBUG FROM BuildExecutable";
   TF_ASSIGN_OR_RETURN(
       std::unique_ptr<Executable> executable,
       backend->compiler()->RunBackend(std::move(module), executor, options));
