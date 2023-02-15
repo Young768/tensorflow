@@ -86,6 +86,7 @@ static StatusOr<std::unique_ptr<xla::LocalExecutable>> BuildExecutable(
 static StatusOr<std::string> BuildHLOString(
     IrExportStage stage, const XlaCompiler::CompilationResult& result,
     xla::LocalClient* local_client, const XlaCompiler::Options& options) {
+  VLOG(0)<<"DEBUG from BuildHLOString#########";
   switch (stage) {
     case IrExportStage::HLO:
     case IrExportStage::HLO_NO_METADATA:

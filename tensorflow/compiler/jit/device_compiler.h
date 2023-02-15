@@ -285,6 +285,7 @@ DeviceCompiler<ExecutableType, ClientType>::CompileStrict(
     typename DeviceCompilationCache<ExecutableType>::Value cache_value,
     CompileScope scope, OpKernelContext* ctx,
     DeviceCompilationProfiler* profiler, mutex* mu) {
+  VLOG(0)<<"DEBUG FROM DeviceCompiler<ExecutableType, ClientType>::CompileStrict";
   tensorflow::Env* env = tensorflow::Env::Default();
   const uint64 compile_start_us = env->NowMicros();
 
