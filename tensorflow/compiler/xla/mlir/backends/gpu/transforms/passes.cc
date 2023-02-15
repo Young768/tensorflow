@@ -44,7 +44,7 @@ void populateXlaGpuRuntimePasses(mlir::OpPassManager& pm,
   if (opts.enable_cuda_graphs) {
     pm.addPass(createOutlineCudaGraphsPass());
   }
-  VLOG(0)<<"// Lower all Gpu operations to the XLA Gpu runtime custom calls.";
+  //VLOG(0)<<"// Lower all Gpu operations to the XLA Gpu runtime custom calls.";
   // Lower all Gpu operations to the XLA Gpu runtime custom calls.
   pm.addPass(createConvertLmhloGpuToGpuRuntimePass());
   pm.addPass(createConvertLmhloToGpuRuntimePass());
