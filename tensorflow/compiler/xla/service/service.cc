@@ -836,7 +836,7 @@ StatusOr<std::unique_ptr<Executable>> Service::BuildExecutable(
     TF_ASSIGN_OR_RETURN(module, backend->compiler()->RunHloPasses(
                                     std::move(module), executor, options));
   }
-
+  VLOG(0)<<"DEBUG FROM BuildExecutable";
   TF_ASSIGN_OR_RETURN(
       std::unique_ptr<Executable> executable,
       backend->compiler()->RunBackend(std::move(module), executor, options));
