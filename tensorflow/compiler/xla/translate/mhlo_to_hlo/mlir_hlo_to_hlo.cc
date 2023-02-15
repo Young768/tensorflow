@@ -2515,7 +2515,7 @@ LogicalResult ConvertToHloModule::Lower(
     inst->emitOpError("unsupported op for export to XLA");
     return failure();
   }
-
+  VLOG(0)<<"Debug from lowering function";
   *return_value = xla::XlaOp();
 
   // See MlirToHloConversionOptions for more about layouts.

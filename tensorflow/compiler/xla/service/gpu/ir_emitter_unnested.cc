@@ -1686,7 +1686,7 @@ Status IrEmitterUnnested::EmitLaunchFunc(mlir::Operation* op) {
 Status IrEmitterUnnested::EmitTritonCustomCall(mlir::Operation* op) {
   VLOG(3) << MlirToString(op);
   auto custom_call = mlir::cast<mlir::lmhlo::CustomCallOp>(op);
-
+  VLOG(0)<<"############Log from EmitTritonCustomCall";
   TF_ASSIGN_OR_RETURN(
       const HloComputation* hlo_computation,
       GetOrCreateSubComputationFromRegion(&custom_call->getRegion(0),
@@ -1760,6 +1760,7 @@ Status IrEmitterUnnested::EmitTritonCustomCall(mlir::Operation* op) {
 Status IrEmitterUnnested::EmitLoopFusion(mlir::Operation* op) {
   auto fusion = mlir::cast<mlir::lmhlo::FusionOp>(op);
 
+  VLOG(0)<<"############Log from EmitLoopFusion";
   TF_ASSIGN_OR_RETURN(const HloComputation* fused_computation,
                       GetOrCreateSubComputationFromRegion(&fusion.getRegion(),
                                                           /*is_fusion=*/true));
@@ -1905,6 +1906,7 @@ Status IrEmitterUnnested::EmitUnnestedTranspose(
 
 Status IrEmitterUnnested::EmitFusion(mlir::Operation* op) {
   auto fusion_op = mlir::cast<mlir::lmhlo::FusionOp>(op);
+  VLOG(0)<<"############Log from EmitFusion";
   TF_ASSIGN_OR_RETURN(
       HloComputation * fused_computation,
       GetOrCreateSubComputationFromRegion(&fusion_op.getRegion(),
@@ -2028,6 +2030,8 @@ Status IrEmitterUnnested::AssertNonDeterminismIsOkay(
 
 Status IrEmitterUnnested::EmitSelectAndScatter(mlir::Operation* op) {
   auto select_and_scatter_op = mlir::cast<mlir::lmhlo::SelectAndScatterOp>(op);
+
+  VLOG(0)<<"############Log from EmitSelectAndScatter";
 
   const Shape source_shape = GetShape(select_and_scatter_op.getSource());
   const Shape operand_shape = GetShape(select_and_scatter_op.getOperand());
@@ -2390,6 +2394,8 @@ Status IrEmitterUnnested::EmitScatter(
   const Shape operand_shape = GetShape(scatter.getOperand());
   CHECK(ShapeUtil::Equal(GetShape(scatter.getOutput()), operand_shape));
 
+  VLOG(0)<<"############Log from EmitScatter";
+
   TF_ASSIGN_OR_RETURN(
       const HloComputation* update_computation,
       GetOrCreateSubComputationFromRegion(&scatter.getUpdateComputation(),
@@ -2656,6 +2662,8 @@ IrEmitterUnnested::GetOrCreateSubComputationFromRegion(mlir::Region* region,
 
 Status IrEmitterUnnested::EmitSort(mlir::Operation* op) {
   auto sort_op = mlir::cast<mlir::lmhlo::SortOp>(op);
+
+  VLOG(0)<<"############Log from EmitSort";
 
   std::string op_name = GetIrNameFromLoc(sort_op.getLoc());
   llvm::SmallVector<mlir::Value> operands = GetHloOperands(sort_op);
@@ -3403,6 +3411,7 @@ Status IrEmitterUnnested::BuildFusedInitializerThunk(
   auto reduce = mlir::dyn_cast_or_null<mlir::mhlo::ReduceOp>(
       fusion.getFusionRoots()[output_index]);
 
+  VLOG(0)<<"Log from BuildFusedInitializerThunk";
   TF_RET_CHECK(reduce);
   TF_RET_CHECK(reduce.getNumResults() == 1);
 
@@ -5239,6 +5248,8 @@ Status IrEmitterUnnested::EmitInputFusibleNonStridedSlices(
   auto fusion = mlir::cast<mlir::lmhlo::FusionOp>(op);
 
   constexpr int unroll_factor = 1;
+
+  VLOG(0)<<"Log from EmitInputFusibleNonStridedSlices";
 
   TF_ASSIGN_OR_RETURN(const HloComputation* fused_computation,
                       GetOrCreateSubComputationFromRegion(&fusion.getRegion(),
