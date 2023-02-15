@@ -1603,7 +1603,7 @@ StatusOr<std::unique_ptr<Executable>> GpuCompiler::RunBackend(
       LOG(ERROR) << "--xla_hlo_profile for GPU is unsupported.";
     }
   }
-
+  VLOG(0)<<"DEBUG FROM GpuCompiler::RunBackend";
   CompileModuleResults compile_module_results;
   TF_RETURN_IF_ERROR(CompileModuleToLlvmIrImpl(
       module.get(), &llvm_context, target_triple_, data_layout_,
@@ -1692,7 +1692,7 @@ GpuCompiler::CompileAheadOfTime(std::unique_ptr<HloModuleGroup> module_group,
   std::any target_config = options.target_config();
   auto* gpu_target_config = std::any_cast<GpuTargetConfig>(&target_config);
   CHECK(gpu_target_config != nullptr || options.executor() != nullptr);
-
+  VLOG(0)<<"DEBUG FROM GpuCompiler::CompileAheadOfTime";
   for (const auto& module : modules) {
     llvm::LLVMContext llvm_context;
 
@@ -1852,6 +1852,7 @@ StatusOr<std::unique_ptr<llvm::Module>> CompileModuleToLlvmIr(
     se::CudaComputeCapability cuda_compute_capability,
     se::RocmComputeCapability rocm_compute_capability, int pointer_size) {
   CompileModuleResults results;
+  VLOG(0)<<"DEBUG FROM GpuCompiler::CompileModuleToLlvmIr";
   TF_RETURN_IF_ERROR(CompileModuleToLlvmIrImpl(
       hlo_module, llvm_context, target_triple, data_layout, platform_name,
       platform_id, gpu_device_info, cuda_compute_capability,
