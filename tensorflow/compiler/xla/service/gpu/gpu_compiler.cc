@@ -951,6 +951,7 @@ StatusOr<std::unique_ptr<HloModule>> GpuCompiler::RunHloPasses(
       tsl::profiler::TraceMeLevel::kInfo);
 
   GpuTargetConfig gpu_target_config = GetGpuTargetConfig(stream_exec);
+  VLOG(0)<<"LOGGING from GpuCompiler::RunHloPasses";
   TF_RETURN_IF_ERROR(
       OptimizeHloModule(module.get(), stream_exec, options.device_allocator,
                         gpu_target_config, /*autotune_results=*/nullptr));
@@ -977,6 +978,7 @@ StatusOr<std::unique_ptr<HloModule>> GpuCompiler::RunHloPassesWithoutDevice(
   tsl::profiler::TraceMe activity(
       [&] { return absl::StrCat("HLO Transforms:", module->name()); },
       tsl::profiler::TraceMeLevel::kInfo);
+  VLOG(0)<<"LOGGING from GpuCompiler::RunHloPassesWithoutDevice";
   TF_RETURN_IF_ERROR(OptimizeHloModule(module.get(), nullptr,
                                        options.device_allocator,
                                        gpu_target_config, &autotune_results));
