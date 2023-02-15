@@ -2924,7 +2924,7 @@ LogicalResult ConvertToHloModule::LowerBasicBlockAsFunction(
     std::optional<llvm::ArrayRef<mlir::Value>> implicit_operands) {
   // Mapping from the Value to lowered XlaOp.
   ValueLoweringMap lowering;
-  VLOG(0)<<"Debug log from LowerBasicBlockAsFunction";
+  
   // If using tuples as input, then there is only one input parameter that is a
   // tuple.
   if (is_entry_function && use_tuple_args_) {
@@ -3041,6 +3041,9 @@ LogicalResult ConvertToHloModule::LowerRegionAsComputation(
     mlir::Region* region, xla::XlaComputation* func,
     std::optional<llvm::ArrayRef<mlir::Value>> implicit_operands,
     bool ensure_single_arg) {
+    
+  VLOG(0)<<"Debug log from LowerRegionAsComputation";
+
   std::unique_ptr<xla::XlaBuilder> builder =
       module_builder_.CreateSubBuilder(absl::StrCat("region_", region_id_++));
   return LowerBasicBlockAsFunction(&region->front(), builder.get(),
