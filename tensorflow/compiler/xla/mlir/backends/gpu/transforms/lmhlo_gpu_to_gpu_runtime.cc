@@ -482,7 +482,7 @@ void ConvertLmhloGpuToGpuRuntimePass::runOnOperation() {
   UidGenerator matmul_uid;
   patterns.insert<GemmOpLowering, CublasLtMatmulOpLowering,
                   CublasLtMatmulF8OpLowering>(ctx, matmul_uid, custom_calls);
-
+  VLOG(0)<<"DEBUG ConvertLmhloGpuToGpuRuntimePass::runOnOperation()";
   // Each unique Conv operation in the module will get assigned a uid.
   UidGenerator conv_uid;
   patterns.insert<ConvForwardOpLowering, ConvForwardFusedOpLowering,

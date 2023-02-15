@@ -5590,6 +5590,7 @@ Status IrEmitterUnnested::EmitOp(mlir::Operation* op) {
 }
 
 Status IrEmitterUnnested::EmitLmhloRegion(mlir::Region* region) {
+  VLOG(0)<<"Debug logging from EmitLmhloRegion";
   for (mlir::Operation& op : llvm::make_early_inc_range(region->front())) {
     TF_RETURN_IF_ERROR(EmitOp(&op));
   }
