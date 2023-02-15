@@ -292,7 +292,7 @@ static Status CompileToLocalExecutable(
   compile_options.always_return_tuple = false;
   compile_options.alias_resource_update =
       !has_ref_vars && may_alias_resource_update;
-
+  VLOG(0)<<"DEBUG FROM CompileToLocalExecutable";
   return xla_device_compiler->CompileIfNeeded(
       options, function, args, compile_options, compile_mode, profiler,
       compilation_result, executable);
