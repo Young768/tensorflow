@@ -295,6 +295,8 @@ StatusOr<std::vector<std::unique_ptr<Executable>>> Service::BuildExecutables(
     VLOG(1) << proto->name();
   }
 
+  VLOG(0)<<"DEBUG FROM Service::BuildExecutables";
+
   CHECK_EQ(module_protos.size(), module_configs.size());
   auto module_group =
       std::make_unique<HloModuleGroup>(module_protos[0]->name());

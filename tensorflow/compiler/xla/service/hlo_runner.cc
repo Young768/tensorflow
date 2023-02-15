@@ -572,6 +572,8 @@ StatusOr<std::unique_ptr<Executable>> HloRunner::CreateExecutable(
                                       backend().memory_allocator()));
     return std::move(executables[0]);
   }
+
+  VLOG(0)<<"DEBUG FROM HloRunner::CreateExecutable";
   return backend().compiler()->RunBackend(std::move(module),
                                           backend().default_stream_executor(),
                                           backend().memory_allocator());

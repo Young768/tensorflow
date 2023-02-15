@@ -37,7 +37,7 @@ StatusOr<std::vector<std::unique_ptr<Executable>>> LLVMCompiler::Compile(
   // not leak its environment into generated code, but we turn off DAZ and FTZ
   // to get some defense-in-depth.
   tsl::port::ScopedDontFlushDenormal dont_flush_denormals;
-
+  VLOG(0)<<"DEBUG from LLVMCompiler::Compile";
   std::vector<std::unique_ptr<Executable>> result;
   std::vector<std::unique_ptr<HloModule>> modules =
       module_group->ConsumeModules();
