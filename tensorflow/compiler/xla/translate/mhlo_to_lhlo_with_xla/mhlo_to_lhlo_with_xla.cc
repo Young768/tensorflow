@@ -342,6 +342,7 @@ tsl::StatusOr<mlir::Operation*> LhloDialectEmitter::CreateOpInFusion(
 
 tsl::StatusOr<mlir::Operation*> LhloDialectEmitter::EmitOp(
     const HloInstruction* instr) {
+  VLOG(0)<<"lOGGING from LhloDialectEmitter::EmitOp";
   using xla::HloOpcode;
   switch (instr->opcode()) {
     case HloOpcode::kAddDependency:
