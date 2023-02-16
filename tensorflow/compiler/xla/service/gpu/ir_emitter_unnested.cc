@@ -5594,6 +5594,7 @@ Status IrEmitterUnnested::EmitLmhloRegion(mlir::Region* region) {
   for (mlir::Operation& op : llvm::make_early_inc_range(region->front())) {
     TF_RETURN_IF_ERROR(EmitOp(&op));
   }
+  VLOG(0)<<"Finished EmitLmhloRegion";
   return OkStatus();
 }
 
