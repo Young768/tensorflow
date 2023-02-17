@@ -1333,6 +1333,7 @@ static Status CompileModuleToLlvmIrImpl(
   ForAllThunks([](Thunk* thunk) { thunk->ClearCompileTimeInfo(); },
                thunk_sequence.get());
   results->executable = std::move(thunk_sequence);
+  VLOG(0)<<"finished gpu compiler@@@";
   return OkStatus();
 }
 
