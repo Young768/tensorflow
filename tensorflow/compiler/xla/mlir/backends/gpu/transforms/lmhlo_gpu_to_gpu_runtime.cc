@@ -500,6 +500,7 @@ void ConvertLmhloGpuToGpuRuntimePass::runOnOperation() {
 
 std::unique_ptr<mlir::OperationPass<mlir::ModuleOp>>
 createConvertLmhloGpuToGpuRuntimePass() {
+  VLOG(0)<<"DEBUG createConvertLmhloGpuToGpuRuntimePass from runtime.";
   return std::make_unique<ConvertLmhloGpuToGpuRuntimePass>();
 }
 

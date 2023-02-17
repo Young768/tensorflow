@@ -344,7 +344,7 @@ void ConvertLmhloToGpuLaunchPass::runOnOperation() {
   // thunk sequence (e.g. redundant copy operation that does not require running
   // anything on device).
   absl::flat_hash_map<Operation*, std::unique_ptr<ThunkSequence>> rewrites;
-
+  VLOG(0)<<"debug from ConvertLmhloToGpuLaunchPass::runOnOperation";
   // Get data to rewrite kernel ops without changing the IR.
   auto walk = [&](auto op_type_tag) {
     return module.walk([&](decltype(op_type_tag) op) -> WalkResult {
@@ -385,6 +385,7 @@ void ConvertLmhloToGpuLaunchPass::runOnOperation() {
 
 std::unique_ptr<mlir::OperationPass<mlir::ModuleOp>>
 createConvertLmhloToGpuLaunchPass(ThunkSequence* thunk_sequence) {
+  VLOG(0)<<"DEBUG createConvertLmhloGpuToGpuRuntimePass from launch.";
   return std::make_unique<ConvertLmhloToGpuLaunchPass>(thunk_sequence);
 }
 
