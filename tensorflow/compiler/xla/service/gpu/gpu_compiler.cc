@@ -1239,6 +1239,8 @@ static Status CompileModuleToLlvmIrImpl(
       entry_function, &results->allocations, &results->output_info,
       &results->output_shape, &results->entry_func_attrs));
 
+  VLOG(0)<<"DEBUG before createGpuFusionRewritePass CompileModuleToLlvmIrImpl";
+
   if (hlo_module->config().debug_options().xla_gpu_enable_mlir_lowering()) {
     mlir::PassManager pm(&mlir_context);
     bool uses_multithreading = pm.getContext()->isMultithreadingEnabled();
@@ -1284,6 +1286,8 @@ static Status CompileModuleToLlvmIrImpl(
   TF_ASSIGN_OR_RETURN(
       auto ir_emitter,
       IrEmitterUnnested::Create(hlo_module->config(), &ir_emitter_context));
+  
+  VLOG(0)<<"DEBUG before ir_emitter CompileModuleToLlvmIrImpl";
 
   {
     XLA_SCOPED_LOGGING_TIMER(absl::StrCat(
