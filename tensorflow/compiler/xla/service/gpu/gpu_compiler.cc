@@ -1635,6 +1635,7 @@ StatusOr<std::unique_ptr<Executable>> GpuCompiler::RunBackend(
   llvm_ir::DumpIrIfEnabled(*module, *compile_module_results.llvm_module,
                            /*optimized=*/false);
 
+  VLOG(0)<<"DEBUG before  GpuCompiler::RunBackend CompileToTargetBinary";
   using BackendCompileResult = std::pair<std::string, std::vector<uint8_t>>;
   TF_ASSIGN_OR_RETURN(
       BackendCompileResult backend_result,
@@ -1656,7 +1657,8 @@ StatusOr<std::unique_ptr<Executable>> GpuCompiler::RunBackend(
   // Make it shared to be captured in the following lambda.
   std::shared_ptr<const BufferAssignment> buffer_assignment(
       std::move(compile_module_results.buffer_assignment));
-
+  
+  VLOG(0)<<"DEBUG before  GpuCompiler::RunBackend  GpuExecutable::Create";
   GpuVersion gpu_version = GetGpuVersion(stream_exec);
   TF_ASSIGN_OR_RETURN(
       auto gpu_executable,
@@ -1684,6 +1686,9 @@ StatusOr<std::unique_ptr<Executable>> GpuCompiler::RunBackend(
   *hlo_proto->mutable_buffer_assignment() = buffer_assignment->ToProto();
   gpu_executable->set_hlo_proto(std::move(hlo_proto));
   gpu_executable->set_debug_info(buffer_assignment->GetStats().ToString());
+
+  VLOG(0)<<"finished GpuCompiler::RunBackend";
+
   return static_cast<std::unique_ptr<Executable>>(std::move(gpu_executable));
 }
 
