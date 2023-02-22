@@ -738,7 +738,6 @@ tsl::StatusOr<mlir::Operation*> LhloDialectEmitter::EmitCustomCallOp(
   }
 
   if (xla::gpu::IsCustomCallToDnnConvolution(*instr)) {
-    VLOG(0)<<"DEBUG LOG from xla::gpu::IsCustomCallToDnnConvolution(*instr)";
     return EmitDnnConvolution(custom_call_instr);
   }
 
