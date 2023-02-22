@@ -146,6 +146,7 @@ StatusOr<FusedIrEmitter::IndexedGenerator> FusedIrEmitter::HandleTuple(
 
 StatusOr<FusedIrEmitter::IndexedGenerator> FusedIrEmitter::CreateGenerator(
     const HloInstruction& instruction) {
+  VLOG(0)<<"DEBUG FROM $$$$$$$$$$$ FusedIrEmitter::CreateGenerator";
   switch (instruction.opcode()) {
     case HloOpcode::kConstant:
       return HandleConstant(instruction);

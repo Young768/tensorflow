@@ -3561,6 +3561,9 @@ HloInstruction::HloInstruction(HloOpcode opcode, const Shape& shape)
 
 template <typename HloInstructionPtr>
 Status HloInstruction::Visit(DfsHloVisitorBase<HloInstructionPtr>* visitor) {
+
+  VLOG(0)<<"Debug from HloInstruction::Visit(DfsHloVisitorBase<HloInstructionPtr>* visitor)";
+
   switch (opcode_) {
     case HloOpcode::kAbs:
       return visitor->HandleAbs(this);
