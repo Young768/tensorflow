@@ -1222,6 +1222,8 @@ static Status CompileModuleToLlvmIrImpl(
   mlir::OwningOpRef<mlir::ModuleOp> mlir_module =
       mlir::ModuleOp::create(mlir::Builder(&mlir_context).getUnknownLoc());
 
+  VLOG(0)<<"DEBUG before HloToLhloModule(";
+
   TF_RETURN_IF_ERROR(
       HloToLhloModule(*results->buffer_assignment, *hlo_module, *mlir_module));
 
