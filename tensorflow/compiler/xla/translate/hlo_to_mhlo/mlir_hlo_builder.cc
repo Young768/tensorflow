@@ -172,6 +172,9 @@ StatusOr<XlaOp> MlirHloBuilder::ConvGeneralDilatedInternal(
     const ConvolutionDimensionNumbers& dimension_numbers,
     int64_t feature_group_count, int64_t batch_group_count,
     const PrecisionConfig* precision_config) {
+  
+  VLOG(0)<<"debug logging from MlirHloBuilder::ConvGeneralDilatedInternal";
+
   TF_ASSIGN_OR_RETURN(mlir::Type ty, ConvertShapeToType<mlir::RankedTensorType>(
                                          shape, builder_));
   mlir::ArrayAttr config_attr;
@@ -216,6 +219,9 @@ StatusOr<XlaOp> MlirHloBuilder::CustomCallInternal(
     const Literal* literal, std::optional<Window> window,
     std::optional<ConvolutionDimensionNumbers> dnums,
     CustomCallSchedule schedule, CustomCallApiVersion api_version) {
+
+  VLOG(0)<<"debug logging from MlirHloBuilder::CustomCallInternal";  
+  
   TF_RET_CHECK(output_operand_aliasing.empty())
       << "MLIR CustomCallOp does not support output_operand_aliasing yet";
   TF_RET_CHECK(!window.has_value())
