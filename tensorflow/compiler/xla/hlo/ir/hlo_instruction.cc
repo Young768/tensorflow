@@ -3841,6 +3841,8 @@ template <typename Visitor>
 static Status PostOrderDFS(HloInstruction* root, Visitor* visitor,
                            std::optional<InternalCompareFunction> operand_order,
                            bool ignore_control_predecessors) {
+
+  VLOG(0)<<"DEBUG FROM PostOrderDFS()";
   visitor->ReserveVisitStates(root->parent()->instruction_count());
 
   // dfs_stack holds pairs of <HloInstruction*->unique_id(), HloInstruction*>.
