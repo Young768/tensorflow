@@ -3562,7 +3562,7 @@ HloInstruction::HloInstruction(HloOpcode opcode, const Shape& shape)
 template <typename HloInstructionPtr>
 Status HloInstruction::Visit(DfsHloVisitorBase<HloInstructionPtr>* visitor) {
 
-  //VLOG(0)<<"Debug from HloInstruction::Visit(DfsHloVisitorBase<HloInstructionPtr>* visitor)";
+  VLOG(0)<<"Debug from HloInstruction::Visit(DfsHloVisitorBase<HloInstructionPtr>* visitor)";
 
   switch (opcode_) {
     case HloOpcode::kAbs:
@@ -3842,7 +3842,6 @@ static Status PostOrderDFS(HloInstruction* root, Visitor* visitor,
                            std::optional<InternalCompareFunction> operand_order,
                            bool ignore_control_predecessors) {
 
-  VLOG(0)<<"DEBUG FROM PostOrderDFS()";
   visitor->ReserveVisitStates(root->parent()->instruction_count());
 
   // dfs_stack holds pairs of <HloInstruction*->unique_id(), HloInstruction*>.
