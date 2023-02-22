@@ -419,6 +419,7 @@ Status ConvolutionVisitor::HandleBatchGroupCount(HloInstruction* convolution) {
 }
 
 Status ConvolutionVisitor::HandleConvolution(HloInstruction* convolution) {
+  VLOG(0)<<"DEBUG from ConvolutionVisitor::HandleConvolution";
   if (convert_batch_groups_only_) {
     return HandleBatchGroupCount(convolution);
   }
