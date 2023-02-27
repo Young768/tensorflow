@@ -1059,7 +1059,7 @@ Status IrEmitterUnnested::EmitConvolutionThunk(mlir::Operation* op) {
     fill_conv_descriptor(conv);
     TF_RETURN_IF_ERROR(set_activation_mode(conv));
     descriptor.backend_config.set_leakyrelu_alpha(0.2);
-    VLOG(0)<<"Debug if the overwrite has been done: ConvForwardFusedOp"<<descriptor.backend_config.leakyrelu_alpha();
+    VLOG(0)<<"Debug if the overwrite has been done: ConvForwardFusedOp "<<descriptor.backend_config.leakyrelu_alpha();
   } else if (auto conv = dyn_cast<ConvForwardFusedSideInputOp>(op)) {
     descriptor.kind = CudnnConvKind::kForwardActivation;
     fill_conv_descriptor(conv);
@@ -1067,7 +1067,7 @@ Status IrEmitterUnnested::EmitConvolutionThunk(mlir::Operation* op) {
     descriptor.backend_config.set_side_input_scale(
         conv.getSideInputScale().convertToDouble());
     descriptor.backend_config.set_leakyrelu_alpha(0.2);
-    VLOG(0)<<"Debug if the overwrite has been done: ConvForwardFusedSideInputOp"<<descriptor.backend_config.leakyrelu_alpha();
+    VLOG(0)<<"Debug if the overwrite has been done: ConvForwardFusedSideInputOp "<<descriptor.backend_config.leakyrelu_alpha();
   } else {
     return InternalError("Unexpected operation");
   }

@@ -40,6 +40,9 @@ CustomCallThunk::CustomCallThunk(ThunkInfo thunk_info,
 
 Status CustomCallThunk::ExecuteOnStream(const ExecuteParams& params) {
   // gpu_stream is CUstream or e.g. the equivalent type in ROCm.
+
+  VLOG(0)<<"DEBUG Logging from CustomCallThunk::ExecuteOnStream";
+
   std::vector<void*> buffers;
   buffers.reserve(operands_.size() + results_.size());
   for (const std::vector<OptionalSlice>& slices : {operands_, results_}) {
