@@ -93,6 +93,7 @@ static void PrintBufferContents(
 
 Status KernelThunk::ExecuteOnStream(const ExecuteParams& params) {
   // Load the kernel.
+  VLOG(0)<<"Debug logging from KernelThunk::ExecuteOnStream";
   se::StreamExecutor* executor = params.stream->parent();
   LaunchDimensions launch_dimensions;
   const se::KernelBase* kernel = nullptr;
