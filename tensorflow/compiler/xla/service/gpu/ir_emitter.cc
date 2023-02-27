@@ -563,6 +563,7 @@ Status IrEmitter::HandleFusion(HloInstruction* fusion) {
                                           GetNestedComputer());
   FusedIrEmitter fused_emitter(elemental_emitter);
   BindFusionArguments(fusion, &fused_emitter);
+  VLOG(0)<<"DEBUG logging from IrEmitter::HandleFusion";
   TF_ASSIGN_OR_RETURN(auto generator, fused_emitter.GetGenerator(
                                           *fusion->fused_expression_root()));
   return EmitTargetElementLoop(*fusion, generator);

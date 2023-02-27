@@ -3669,7 +3669,9 @@ ReductionCodegenState IrEmitterUnnested::GenerateReductionCodegenState(
     FusedIrEmitter& fused_emitter) {
   ReductionCodegenState reduction_codegen_state(reduction_info);
   VLOG(10) << "Emit prologue for reduction: " << MlirToString(fusion);
-
+  
+  VLOG(0)<<"Debug logging from IrEmitterUnnested::GenerateReductionCodegenState";
+  
   for (const HloReduceInstruction* reduce_hlo : reduce_instr_index_group) {
     int num_partial_results = reduction_codegen_state.GetNumPartialResults();
     for (int op_result_idx = 0;
@@ -4310,6 +4312,8 @@ Status IrEmitterUnnested::EmitTranspose021Tile(
       **absl::c_find_if(hlo_roots, [](HloInstruction* instr) {
         return FindAnyTiledTranspose(FindNonTrivialHero(*instr));
       }));
+  
+  VLOG(0)<<"DEBUG logging from IrEmitterUnnested::EmitTranspose021Tile";
 
   const Shape& out_shape = first_transpose->shape();
   const Shape& transpose_in_shape = first_transpose->operand(0)->shape();
@@ -4876,6 +4880,8 @@ Status IrEmitterUnnested::EmitIRForReduction(
   std::vector<const HloReduceInstruction*> reductions;
   ExtraOutputGensMap extra_output_gens;
 
+  VLOG(0)<<"DEBUG logging from IrEmitterUnnested::EmitIRForReduction";
+
   for (const HloInstruction* hlo : instr_index_group) {
     if (IsReductionFromOrToContiguousDimensions(*hlo)) {
       reductions.push_back(Cast<HloReduceInstruction>(hlo));
@@ -5177,6 +5183,8 @@ Status IrEmitterUnnested::EmitElementForInputFusibleSlices(
   VLOG(10) << "Emitting slice input fusion for "
            << fused_computation->ToString();
 
+  VLOG(0)<<"DEBUG logging from IrEmitterUnnested::EmitElementForInputFusibleSlices";
+
   HloInstruction* slice_or_tuple = fused_computation->root_instruction();
   auto slice_instructions = [&]() -> absl::Span<HloInstruction* const> {
     if (slice_or_tuple->opcode() == HloOpcode::kSlice) {
@@ -5319,6 +5327,7 @@ Status IrEmitterUnnested::EmitScatter(mlir::lmhlo::FusionOp fusion_op,
                                       const HloComputation* fused_computation) {
   auto* root = fused_computation->root_instruction();
 
+  VLOG(0)<<"DEBUG Logging from IrEmitterUnnested::EmitScatter";
   // The initialization from 'operand' is using different loop bounds, so
   // emit it in a separate kernel. Treat it like a loop fusion, writing to
   // the output buffer.
