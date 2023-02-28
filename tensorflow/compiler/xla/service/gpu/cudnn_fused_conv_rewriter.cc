@@ -166,8 +166,9 @@ StatusOr<HloInstruction*> EnsureIsConvBiasActivation(HloInstruction* conv, HloIn
 
     absl::InlinedVector<HloInstruction*, 3> new_operands(
         conv->operands().begin(), conv->operands().end());
+    VLOG(0)<<"DEBUG the number of operands before is: "<<new_operands.size();
     new_operands.push_back(bias);
-    
+    VLOG(0)<<"DEBUG the number of operands after is: "<<new_operands.size();
 
     HloInstruction* new_conv = comp->AddInstruction(
         conv->CloneWithNewOperands(conv->shape(), new_operands));

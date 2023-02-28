@@ -52,6 +52,7 @@ using mlir::lmhlo_gpu::ConvBackwardFilterOp;
 using mlir::lmhlo_gpu::ConvBackwardInputOp;
 using mlir::lmhlo_gpu::ConvForwardFusedOp;
 using mlir::lmhlo_gpu::ConvForwardFusedSideInputOp;
+using mlir::lmhlo_gpu::ConvForwardFusedAlphaOp;
 using mlir::lmhlo_gpu::ConvForwardOp;
 using mlir::lmhlo_gpu::CublasLtMatmulF8Op;
 using mlir::lmhlo_gpu::CublasLtMatmulOp;
@@ -300,6 +301,9 @@ class ConvOpLowering : public OpRewritePattern<Conv> {
   static StringRef CustomCallTarget(ConvForwardFusedSideInputOp) {
     return "xla.gpu.conv.forward.fused.side_input";
   }
+  static StringRef CustomCallTarget(ConvForwardFusedAlphaOp) {
+    return "xla.gpu.conv.forward.fused.alpha";
+  }
   static StringRef CustomCallTarget(ConvBackwardFilterOp) {
     return "xla.gpu.conv.backward.filter";
   }
@@ -380,6 +384,13 @@ class ConvOpLowering : public OpRewritePattern<Conv> {
                     fused.getActivationModeAttr());
       set_attr("side_input_scale", fused.getSideInputScaleAttr());
     }
+
+    // Copy attributes specific for fused convolutions with alpha.
+    if (auto fused = dyn_cast<ConvForwardFusedAlphaOp>(op.getOperation())) {
+      call->setAttr(b.getStringAttr("activation_mode"),
+                    fused.getActivationModeAttr());
+      set_attr("side_input_scale", fused.getAlphaAttr());
+    }
     // Erase the original conv operation.
     rewriter.eraseOp(op);
 
@@ -414,6 +425,12 @@ class ConvBackwardInputOpLowering : public ConvOpLowering<ConvBackwardInputOp> {
 
 class ConvForwardFusedSideInputOpLowering
     : public ConvOpLowering<ConvForwardFusedSideInputOp> {
+ public:
+  using ConvOpLowering::ConvOpLowering;
+};
+
+class ConvForwardFusedAlphaOpLowering
+    : public ConvOpLowering<ConvForwardFusedAlphaOp> {
  public:
   using ConvOpLowering::ConvOpLowering;
 };
@@ -486,7 +503,7 @@ void ConvertLmhloGpuToGpuRuntimePass::runOnOperation() {
   // Each unique Conv operation in the module will get assigned a uid.
   UidGenerator conv_uid;
   patterns.insert<ConvForwardOpLowering, ConvForwardFusedOpLowering,
-                  ConvForwardFusedSideInputOpLowering,
+                  ConvForwardFusedSideInputOpLowering, ConvForwardFusedAlphaOpLowering,
                   ConvBackwardFilterOpLowering, ConvBackwardInputOpLowering>(
       ctx, conv_uid, custom_calls);
 
