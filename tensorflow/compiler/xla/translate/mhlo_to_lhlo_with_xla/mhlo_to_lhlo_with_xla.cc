@@ -1203,6 +1203,7 @@ tsl::StatusOr<Operation*> LhloDialectEmitter::EmitDnnConvolution(
       if (custom_call->operand_count() == 3) {
 
         if (backend_config.side_input_scale() != 0.0) {
+          VLOG(0)<<"This branch $$$$$$$$$$$$$$$$$$$$$$$$$$$ "<<backend_config.side_input_scale();
           TF_ASSIGN_OR_RETURN(
             auto cnn_fused_alpha,
             CreateOpWithoutAttrs<lmhlo_gpu::ConvForwardFusedAlphaOp>(custom_call));
@@ -1210,6 +1211,7 @@ tsl::StatusOr<Operation*> LhloDialectEmitter::EmitDnnConvolution(
           TF_RETURN_IF_ERROR(set_activation(cnn_fused_alpha));
           return set_common_conv_attributes(cnn_fused_alpha);
         }
+        VLOG(0)<<"Not branch I want $$$$$$$$$$$$$$$$$$$$$$$$$$$ "<<backend_config.side_input_scale();
         TF_ASSIGN_OR_RETURN(
             auto cnn_fused,
             CreateOpWithoutAttrs<lmhlo_gpu::ConvForwardFusedOp>(custom_call));
