@@ -301,7 +301,7 @@ static GpuConvDescriptor GetConvDescriptor(
   if (fused.has_value())
     descriptor.backend_config.set_activation_mode(fused->activation_mode);
   
-  if (alpha.has_value())
+  if (leakyrelu_alpha.has_value())
     descriptor.backend_config.set_leakyrelu_alpha(leakyrelu_alpha->alpha);
 
   // Set attributes specific for convolutions with side input.
@@ -452,7 +452,7 @@ XLA_RUNTIME_DEFINE_CUSTOM_CALL(
 );
 
 XLA_RUNTIME_DEFINE_CUSTOM_CALL(
-    ConvFused, FunctionWrapper<ConvImpl<Kind::kForwardActivation>>(), checks,
+    ConvFusedAlpha, FunctionWrapper<ConvImpl<Kind::kForwardActivation>>(), checks,
     BindConvAttributes(
         CustomCall::Bind("xla.gpu.conv.fused.alpha")
             .UserData<const ServiceExecutableRunOptions*>()
