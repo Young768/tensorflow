@@ -42,9 +42,11 @@ StatusOr<std::vector<std::unique_ptr<Executable>>> LLVMCompiler::Compile(
   std::vector<std::unique_ptr<HloModule>> modules =
       module_group->ConsumeModules();
   for (size_t i = 0; i < modules.size(); i++) {
+    VLOG(0)<<"debug from llvm_compiler before RunHloPasses for: "<<i;
     TF_ASSIGN_OR_RETURN(modules[i],
                         RunHloPasses(std::move(modules[i]), stream_execs[i][0],
                                      options.device_allocator));
+    VLOG(0)<<"debug from llvm_compiler before runbackend for: "<<i;
     TF_ASSIGN_OR_RETURN(std::unique_ptr<Executable> executable,
                         RunBackend(std::move(modules[i]), stream_execs[i][0],
                                    options.device_allocator));
