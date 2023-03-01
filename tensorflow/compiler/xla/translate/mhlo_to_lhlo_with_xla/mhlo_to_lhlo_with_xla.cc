@@ -1202,7 +1202,7 @@ tsl::StatusOr<Operation*> LhloDialectEmitter::EmitDnnConvolution(
       // Fused conv can be either with side input or without.
       if (custom_call->operand_count() == 3) {
 
-        if (builder_.getF64FloatAttr(backend_config.side_input_scale()) != 0.0){
+        if (backend_config.side_input_scale() != 0.0) {
           TF_ASSIGN_OR_RETURN(
             auto cnn_fused_alpha,
             CreateOpWithoutAttrs<lmhlo_gpu::ConvForwardFusedAlphaOp>(custom_call));
