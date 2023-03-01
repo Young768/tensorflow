@@ -1074,7 +1074,7 @@ Status IrEmitterUnnested::EmitConvolutionThunk(mlir::Operation* op) {
     fill_conv_descriptor(conv);
     TF_RETURN_IF_ERROR(set_activation_mode(conv));
     descriptor.backend_config.set_leakyrelu_alpha(
-        conv.getSideInputScale().convertToDouble());
+        conv.getAlpha().convertToDouble());
     VLOG(0)<<"Debug if the overwrite has been done: ConvForwardFusedAlphaOp "<<descriptor.backend_config.leakyrelu_alpha();
   } else {
     return InternalError("Unexpected operation");
