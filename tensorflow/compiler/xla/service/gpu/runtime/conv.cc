@@ -213,6 +213,10 @@ struct SideInputAttrs {
   double side_input_scale;
 };
 
+struct AlphaAttrs {
+  double alpha;
+};
+
 }  // namespace
 
 static GpuConvDescriptor GetConvDescriptor(
@@ -224,7 +228,8 @@ static GpuConvDescriptor GetConvDescriptor(
     ConvDimensionNumbers dims, Window w, ConvBackendConfig b, ConvAttrs attrs,
     // Conv-specific arguments and attributes
     std::optional<FusedConvAttrs> fused = std::nullopt,
-    std::optional<SideInputAttrs> side_input = std::nullopt) {
+    std::optional<SideInputAttrs> side_input = std::nullopt,
+    std::optional<AlphaAttrs> leakyrelu_alpha = std::nullopt) {
   // Build a convolution descriptor from the attributes.
   GpuConvDescriptor descriptor;
   descriptor.kind = kind;
@@ -295,6 +300,9 @@ static GpuConvDescriptor GetConvDescriptor(
   // Set attributes specific for fused convolutions.
   if (fused.has_value())
     descriptor.backend_config.set_activation_mode(fused->activation_mode);
+  
+  if (alpha.has_value())
+    descriptor.backend_config.set_leakyrelu_alpha(leakyrelu_alpha->alpha);
 
   // Set attributes specific for convolutions with side input.
   if (side_input.has_value())
@@ -326,13 +334,18 @@ static absl::Status ConvImpl(
     int64_t feature_group_count, double result_scale,
     // Optional attributes for fused convolutions.
     std::optional<se::dnn::ActivationMode> activation_mode = std::nullopt,
-    std::optional<double> side_input_scale = std::nullopt) {
+    std::optional<double> side_input_scale = std::nullopt,
+    std::optional<double> alpha = std::nullopt) {
   // Build config for optional attributes.
   std::optional<FusedConvAttrs> fused_attrs = std::nullopt;
   if (activation_mode.has_value()) fused_attrs = {*activation_mode};
 
   std::optional<SideInputAttrs> side_input_attrs = std::nullopt;
   if (side_input_scale.has_value()) side_input_attrs = {*side_input_scale};
+
+  std::optional<AlphaAttrs> alpha_attrs = std::nullopt;
+  if (alpha.has_value()) alpha_attrs = {*alpha};
+
   VLOG(0)<<"debug from ConvImpl ............................";
   // Get or create the convolution runner state.
   absl::StatusOr<ConvRunner*> conv =
@@ -342,7 +355,7 @@ static absl::Status ConvImpl(
             {window_strides, padding, lhs_dilation, rhs_dilation,
              window_reversal},
             backend_config, {feature_group_count, result_scale}, fused_attrs,
-            side_input_attrs);
+            side_input_attrs, alpha_attrs);
 
         StatusOr<GpuConvConfig> conv_config = GetGpuConvConfig(descriptor, "");
         VLOG(0)<<"debug from ConvImpl for config_leakyrelu_alpha: "<<conv_config->fusion->leakyrelu_alpha;
@@ -416,6 +429,7 @@ XLA_RUNTIME_DEFINE_CUSTOM_CALL_TEMPLATE(
         )
         .Value(std::optional<se::dnn::ActivationMode>())  // activation_mode
         .Value(std::optional<double>())                   // side_input_scale
+        .Value(std::optional<double>())                   // alpha
 );
 
 XLA_RUNTIME_DEFINE_CUSTOM_CALL(
@@ -434,7 +448,28 @@ XLA_RUNTIME_DEFINE_CUSTOM_CALL(
         )
         .Attr<se::dnn::ActivationMode>("activation_mode")
         .Value(std::optional<double>())  // side_input_scale
+        .Value(std::optional<double>())                   // alpha
 );
+
+XLA_RUNTIME_DEFINE_CUSTOM_CALL(
+    ConvFused, FunctionWrapper<ConvImpl<Kind::kForwardActivation>>(), checks,
+    BindConvAttributes(
+        CustomCall::Bind("xla.gpu.conv.fused.alpha")
+            .UserData<const ServiceExecutableRunOptions*>()
+            .UserData<const DebugOptions*>()
+            .State<ConvRunner>("uid")                   // runner
+            .Arg<StridedMemrefView>()                   // operand0
+            .Arg<StridedMemrefView>()                   // operand1
+            .Arg<FlatMemrefView>()                      // bias
+            .Value(std::optional<StridedMemrefView>())  // side_input
+            .Arg<StridedMemrefView>()                   // output
+            .Arg<FlatMemrefView>()                      // scratch
+        )
+        .Attr<se::dnn::ActivationMode>("activation_mode")
+        .Value(std::optional<double>())  // side_input_scale
+        .Attr<double>("leakyrelu_alpha")                   // alpha
+);
+
 
 XLA_RUNTIME_DEFINE_CUSTOM_CALL(
     ConvFusedSideInput, FunctionWrapper<ConvImpl<Kind::kForwardActivation>>(),
@@ -451,7 +486,8 @@ XLA_RUNTIME_DEFINE_CUSTOM_CALL(
                            .Arg<FlatMemrefView>()     // scratch
                        )
         .Attr<se::dnn::ActivationMode>("activation_mode")
-        .Attr<double>("side_input_scale"));
+        .Attr<double>("side_input_scale")
+        .Value(std::optional<double>()));                   // alpha
 
 //===----------------------------------------------------------------------===//
 
@@ -461,6 +497,7 @@ void RegisterConvCustomCalls(runtime::DirectCustomCallRegistry& registry) {
   registry.Register(conv("backward.input"), Conv<Kind::kBackwardInput>);
   registry.Register(conv("backward.filter"), Conv<Kind::kBackwardFilter>);
   registry.Register(conv("forward.fused"), ConvFused);
+  registry.Register(conv("forward.fused.alpha"), ConvFusedAlpha);
   registry.Register(conv("forward.fused.side_input"), ConvFusedSideInput);
 }
 

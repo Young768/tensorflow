@@ -389,7 +389,7 @@ class ConvOpLowering : public OpRewritePattern<Conv> {
     if (auto fused = dyn_cast<ConvForwardFusedAlphaOp>(op.getOperation())) {
       call->setAttr(b.getStringAttr("activation_mode"),
                     fused.getActivationModeAttr());
-      set_attr("side_input_scale", fused.getAlphaAttr());
+      set_attr("leakyrelu_alpha", fused.getAlphaAttr());
     }
     // Erase the original conv operation.
     rewriter.eraseOp(op);
