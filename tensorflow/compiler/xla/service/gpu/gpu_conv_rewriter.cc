@@ -718,6 +718,7 @@ StatusOr<bool> RunOnInstruction(HloInstruction* conv) {
 // cudnn/miopen.
 // Returns true if it made any changes.
 StatusOr<bool> RunOnComputation(HloComputation* computation) {
+  VLOG(0)<<"DEBUG FROM RunOnComputation(HloComputation* computation)";
   std::vector<HloInstruction*> convs;
   for (auto* hlo : computation->instructions()) {
     if (hlo->opcode() == HloOpcode::kConvolution) {
