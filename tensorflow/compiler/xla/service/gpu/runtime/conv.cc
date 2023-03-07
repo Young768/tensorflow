@@ -448,28 +448,8 @@ XLA_RUNTIME_DEFINE_CUSTOM_CALL(
         )
         .Attr<se::dnn::ActivationMode>("activation_mode")
         .Value(std::optional<double>())  // side_input_scale
-        .Value(std::optional<double>())                   // alpha
-);
-
-XLA_RUNTIME_DEFINE_CUSTOM_CALL(
-    ConvFusedAlpha, FunctionWrapper<ConvImpl<Kind::kForwardActivation>>(), checks,
-    BindConvAttributes(
-        CustomCall::Bind("xla.gpu.conv.fused.alpha")
-            .UserData<const ServiceExecutableRunOptions*>()
-            .UserData<const DebugOptions*>()
-            .State<ConvRunner>("uid")                   // runner
-            .Arg<StridedMemrefView>()                   // operand0
-            .Arg<StridedMemrefView>()                   // operand1
-            .Arg<FlatMemrefView>()                      // bias
-            .Value(std::optional<StridedMemrefView>())  // side_input
-            .Arg<StridedMemrefView>()                   // output
-            .Arg<FlatMemrefView>()                      // scratch
-        )
-        .Attr<se::dnn::ActivationMode>("activation_mode")
-        .Value(std::optional<double>())  // side_input_scale
         .Attr<double>("leakyrelu_alpha")                   // alpha
 );
-
 
 XLA_RUNTIME_DEFINE_CUSTOM_CALL(
     ConvFusedSideInput, FunctionWrapper<ConvImpl<Kind::kForwardActivation>>(),
@@ -497,7 +477,6 @@ void RegisterConvCustomCalls(runtime::DirectCustomCallRegistry& registry) {
   registry.Register(conv("backward.input"), Conv<Kind::kBackwardInput>);
   registry.Register(conv("backward.filter"), Conv<Kind::kBackwardFilter>);
   registry.Register(conv("forward.fused"), ConvFused);
-  registry.Register(conv("forward.fused.alpha"), ConvFusedAlpha);
   registry.Register(conv("forward.fused.side_input"), ConvFusedSideInput);
 }
 
