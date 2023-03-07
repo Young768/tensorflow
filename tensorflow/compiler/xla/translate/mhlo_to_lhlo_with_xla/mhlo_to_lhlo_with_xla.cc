@@ -1201,12 +1201,21 @@ tsl::StatusOr<Operation*> LhloDialectEmitter::EmitDnnConvolution(
     case xla::gpu::CudnnConvKind::kForwardActivation: {
       // Fused conv can be either with side input or without.
       if (custom_call->operand_count() == 3) {
+
+        if (backend_config.leakyrelu_alpha() != 0.0) {
+          VLOG(0)<<"This branch $$$$$$$$$$$$$$$$$$$$$$ssss$$$$$ "<<backend_config.leakyrelu_alpha();
+          TF_ASSIGN_OR_RETURN(
+            auto cnn_fused_alpha,
+            CreateOpWithoutAttrs<lmhlo_gpu::ConvForwardFusedAlphaOp>(custom_call));
+          cnn_fused_alpha.setAlphaAttr(builder_.getF64FloatAttr(backend_config.leakyrelu_alpha()));
+          TF_RETURN_IF_ERROR(set_activation(cnn_fused_alpha));
+          return set_common_conv_attributes(cnn_fused_alpha);
+        }
+        VLOG(0)<<"Not branch I want $$$$$$$$$$$$$$$$$$$$$$$$$$$ "<<backend_config.leakyrelu_alpha();
         TF_ASSIGN_OR_RETURN(
             auto cnn_fused,
             CreateOpWithoutAttrs<lmhlo_gpu::ConvForwardFusedOp>(custom_call));
         TF_RETURN_IF_ERROR(set_activation(cnn_fused));
-        if (backend_config.leakyrelu_alpha() != 0.0)
-          cnn_fused.setAlphaAttr(builder_.getF64FloatAttr(backend_config.leakyrelu_alpha()))
         return set_common_conv_attributes(cnn_fused);
       }
 

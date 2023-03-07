@@ -100,8 +100,7 @@ def LHLOGPU_ConvForwardFusedOp : LHLOGPU_ConvBaseOp<"conv_forward_fused"> {
        Arg<LHLO_Buffer, "", [MemWrite]>:$output,
        Arg<LHLO_Buffer, "", [MemWrite]>:$scratch),
      GpuConvolutionAttributes<(ins
-         ActivationAttr:$activation_mode)>.attributes,
-         F64Attr:$alpha)>.attributes);
+         ActivationAttr:$activation_mode)>.attributes);
 }
 
 // output = activation(result_scale * conv(input, filter) +
@@ -120,6 +119,19 @@ def LHLOGPU_ConvForwardFusedSideInputOp :
      GpuConvolutionAttributes<(ins
          ActivationAttr:$activation_mode,
          F64Attr:$side_input_scale)>.attributes);
+}
+
+def LHLOGPU_ConvForwardFusedAlphaOp : LHLOGPU_ConvBaseOp<"conv_forward_fused_with_alpha"> {
+  let arguments = !con(
+    (ins
+       Arg<LHLO_Buffer, "", [MemRead]>:$input,
+       Arg<LHLO_Buffer, "", [MemRead]>:$filter,
+       Arg<LHLO_Buffer, "", [MemRead]>:$bias,
+       Arg<LHLO_Buffer, "", [MemWrite]>:$output,
+       Arg<LHLO_Buffer, "", [MemWrite]>:$scratch),
+     GpuConvolutionAttributes<(ins
+         ActivationAttr:$activation_mode,
+         F64Attr:$alpha)>.attributes);
 }
 
 //===----------------------------------------------------------------------===//
