@@ -52,7 +52,6 @@ using mlir::lmhlo_gpu::ConvBackwardFilterOp;
 using mlir::lmhlo_gpu::ConvBackwardInputOp;
 using mlir::lmhlo_gpu::ConvForwardFusedOp;
 using mlir::lmhlo_gpu::ConvForwardFusedSideInputOp;
-using mlir::lmhlo_gpu::ConvForwardFusedAlphaOp;
 using mlir::lmhlo_gpu::ConvForwardOp;
 using mlir::lmhlo_gpu::CublasLtMatmulF8Op;
 using mlir::lmhlo_gpu::CublasLtMatmulOp;
@@ -301,9 +300,6 @@ class ConvOpLowering : public OpRewritePattern<Conv> {
   static StringRef CustomCallTarget(ConvForwardFusedSideInputOp) {
     return "xla.gpu.conv.forward.fused.side_input";
   }
-  static StringRef CustomCallTarget(ConvForwardFusedAlphaOp) {
-    return "xla.gpu.conv.forward.fused.alpha";
-  }
   static StringRef CustomCallTarget(ConvBackwardFilterOp) {
     return "xla.gpu.conv.backward.filter";
   }
@@ -376,6 +372,7 @@ class ConvOpLowering : public OpRewritePattern<Conv> {
     if (auto fused = dyn_cast<ConvForwardFusedOp>(op.getOperation())) {
       call->setAttr(b.getStringAttr("activation_mode"),
                     fused.getActivationModeAttr());
+      set_attr("leakyrelu_alpha", fused.getAlphaAttr());
     }
 
     // Copy attributes specific for fused convolutions with side input.
@@ -385,12 +382,6 @@ class ConvOpLowering : public OpRewritePattern<Conv> {
       set_attr("side_input_scale", fused.getSideInputScaleAttr());
     }
 
-    // Copy attributes specific for fused convolutions with alpha.
-    if (auto fused = dyn_cast<ConvForwardFusedAlphaOp>(op.getOperation())) {
-      call->setAttr(b.getStringAttr("activation_mode"),
-                    fused.getActivationModeAttr());
-      set_attr("leakyrelu_alpha", fused.getAlphaAttr());
-    }
     // Erase the original conv operation.
     rewriter.eraseOp(op);
 
@@ -429,11 +420,6 @@ class ConvForwardFusedSideInputOpLowering
   using ConvOpLowering::ConvOpLowering;
 };
 
-class ConvForwardFusedAlphaOpLowering
-    : public ConvOpLowering<ConvForwardFusedAlphaOp> {
- public:
-  using ConvOpLowering::ConvOpLowering;
-};
 
 //===----------------------------------------------------------------------===//
 

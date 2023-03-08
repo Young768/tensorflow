@@ -954,7 +954,6 @@ Status IrEmitterUnnested::EmitConvolutionThunk(mlir::Operation* op) {
   using mlir::lmhlo_gpu::ConvBackwardInputOp;
   using mlir::lmhlo_gpu::ConvForwardFusedOp;
   using mlir::lmhlo_gpu::ConvForwardFusedSideInputOp;
-  using mlir::lmhlo_gpu::ConvForwardFusedAlphaOp;
   using mlir::lmhlo_gpu::ConvForwardOp;
 
   // Last 2 operands of the convolution operation are the result and scratch.
@@ -1059,6 +1058,8 @@ Status IrEmitterUnnested::EmitConvolutionThunk(mlir::Operation* op) {
     descriptor.kind = CudnnConvKind::kForwardActivation;
     fill_conv_descriptor(conv);
     TF_RETURN_IF_ERROR(set_activation_mode(conv));
+    descriptor.backend_config.set_leakyrelu_alpha(
+        conv.getAlpha().convertToDouble());
     VLOG(0)<<"Debug if the overwrite has been done: ConvForwardFusedOp "<<descriptor.backend_config.leakyrelu_alpha();
   } else if (auto conv = dyn_cast<ConvForwardFusedSideInputOp>(op)) {
     descriptor.kind = CudnnConvKind::kForwardActivation;
@@ -1068,13 +1069,6 @@ Status IrEmitterUnnested::EmitConvolutionThunk(mlir::Operation* op) {
         conv.getSideInputScale().convertToDouble());
     descriptor.backend_config.set_leakyrelu_alpha(0.2);
     VLOG(0)<<"Debug if the overwrite has been done: ConvForwardFusedSideInputOp "<<descriptor.backend_config.leakyrelu_alpha();
-  } else if (auto conv = dyn_cast<ConvForwardFusedAlphaOp>(op)) {
-    descriptor.kind = CudnnConvKind::kForwardActivation;
-    fill_conv_descriptor(conv);
-    TF_RETURN_IF_ERROR(set_activation_mode(conv));
-    descriptor.backend_config.set_leakyrelu_alpha(
-        conv.getAlpha().convertToDouble());
-    VLOG(0)<<"Debug if the overwrite has been done: ConvForwardFusedAlphaOp "<<descriptor.backend_config.leakyrelu_alpha();
   } else {
     return InternalError("Unexpected operation");
   }
@@ -5469,7 +5463,6 @@ Status IrEmitterUnnested::EmitOp(mlir::Operation* op) {
 
   if (mlir::isa<mlir::lmhlo_gpu::ConvForwardOp,
                 mlir::lmhlo_gpu::ConvForwardFusedOp,
-                mlir::lmhlo_gpu::ConvForwardFusedAlphaOp,
                 mlir::lmhlo_gpu::ConvForwardFusedSideInputOp,
                 mlir::lmhlo_gpu::ConvBackwardFilterOp,
                 mlir::lmhlo_gpu::ConvBackwardInputOp>(op)) {
