@@ -101,7 +101,7 @@ def LHLOGPU_ConvForwardFusedOp : LHLOGPU_ConvBaseOp<"conv_forward_fused"> {
        Arg<LHLO_Buffer, "", [MemWrite]>:$scratch),
      GpuConvolutionAttributes<(ins
          ActivationAttr:$activation_mode,
-         F64Attr:$alpha)>.attributes)>.attributes);
+         F64Attr:$alpha)>.attributes);
 }
 
 // output = activation(result_scale * conv(input, filter) +
