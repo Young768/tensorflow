@@ -489,7 +489,7 @@ void ConvertLmhloGpuToGpuRuntimePass::runOnOperation() {
   // Each unique Conv operation in the module will get assigned a uid.
   UidGenerator conv_uid;
   patterns.insert<ConvForwardOpLowering, ConvForwardFusedOpLowering,
-                  ConvForwardFusedSideInputOpLowering, ConvForwardFusedAlphaOpLowering,
+                  ConvForwardFusedSideInputOpLowering,
                   ConvBackwardFilterOpLowering, ConvBackwardInputOpLowering>(
       ctx, conv_uid, custom_calls);
 
