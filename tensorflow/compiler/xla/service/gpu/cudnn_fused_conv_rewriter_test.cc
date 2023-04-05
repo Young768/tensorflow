@@ -1076,9 +1076,7 @@ TEST_F(CudnnFusedConvRewriterHloTest, DontFuseEluIfMultipleUses) {
                         .WithComparisonDirection(ComparisonDirection::kGt),
                     gte_pattern,
                     m::Op()
-                        .WithPredicate([](const HloInstruction* instr) {
-                          return instr->opcode() == HloOpcode::kExpm1;
-                        })
+                        .WithPredicate(HloPredicateIsOp<HloOpcode::kExpm1>)
                         .WithOperand(0, gte_pattern)),
           m::Minimum())));
   TF_ASSERT_OK_AND_ASSIGN(auto config,

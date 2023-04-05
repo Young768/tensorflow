@@ -716,14 +716,23 @@ static xla::SendCallback CSendCallbackToCpp(
           xla::PjRtChunk input, size_t total_size_in_bytes,
           bool done) -> xla::Status {
         PJRT_Chunk c_chunk = ConvertFromCppChunk(std::move(input));
+        // PJRT_CallbackError creates PJRT_Error in the implementation, but
+        // using the caller's callback status code & message. This way, the
+        // caller avoids creating PJRT_Error itself, and the PJRT_Error is fully
+        // managed in the implementation layer.
+        PJRT_CallbackError c_callback_error =
+            [](PJRT_Error_Code code, const char* message, size_t message_size) {
+              return new PJRT_Error{
+                  xla::Status(static_cast<absl::StatusCode>(code),
+                              std::string(message, message_size))};
+            };
 
-        // TODO(b/267255088) retrieve up the callback error message.
-        bool success = callback(&c_chunk, total_size_in_bytes, done, user_arg);
-        if (success) {
+        std::unique_ptr<PJRT_Error> error(callback(
+            &c_chunk, &c_callback_error, total_size_in_bytes, done, user_arg));
+        if (error == nullptr) {
           return tsl::OkStatus();
         }
-        return xla::Status(absl::StatusCode::kUnknown,
-                           "PJRT_SendCallback returned false (error).");
+        return error->status;
       }};
 }
 
@@ -1071,8 +1080,15 @@ PJRT_Error* PJRT_Buffer_ToHostBuffer(PJRT_Buffer_ToHostBuffer_Args* args) {
       "PJRT_Buffer_ToHostBuffer_Args",
       PJRT_Buffer_ToHostBuffer_Args_STRUCT_SIZE, args->struct_size));
 
-  const xla::Shape& host_shape = xla::ShapeUtil::DeviceShapeToHostShape(
-      args->src->buffer->on_device_shape());
+  xla::Shape device_shape;
+  if (args->src->buffer->on_device_shape().is_dynamic()) {
+    PJRT_ASSIGN_OR_RETURN(device_shape,
+                          args->src->buffer->logical_on_device_shape());
+  } else {
+    device_shape = args->src->buffer->on_device_shape();
+  }
+  const xla::Shape& host_shape =
+      xla::ShapeUtil::DeviceShapeToHostShape(device_shape);
 
   size_t host_buffer_size = xla::ShapeUtil::ByteSizeOfElements(host_shape);
 
